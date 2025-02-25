@@ -46,10 +46,10 @@ jobs:
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
-        name: documentation-report
-        path: |
-          asciidoc/output/index.html
-          asciidoc/output/resources/
+          name: documentation-report
+          path: |
+            asciidoc/output/index.html
+            asciidoc/output/resources/
   deploy:
     needs: build
     runs-on: ubuntu-latest
