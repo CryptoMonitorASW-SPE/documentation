@@ -33,12 +33,13 @@ jobs:
         run: |
           cd asciidoc
           make html
+          mv /output/report.html /output/index.html
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: documentation-report
-          path: asciidoc/output/report.html
+          path: asciidoc/output/index.html
   deploy:
     needs: build
     runs-on: ubuntu-latest
