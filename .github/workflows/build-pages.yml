@@ -36,7 +36,10 @@ jobs:
           cd output
           mv report.html index.html
           cd ..
-          cp -r src/resources ../output
+          ls -la 
+          cp -r src/resources output/
+          ls -la src/
+          
 
       - name: List contents of docs directory
         run: |
