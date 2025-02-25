@@ -34,6 +34,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: documentation-report
-          path: output/report.html
+          path: asciidoc/output/report.html
 
           
