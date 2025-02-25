@@ -39,5 +39,35 @@ jobs:
         with:
           name: documentation-report
           path: asciidoc/output/report.html
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-          
+      - name: Checkout gh-pages Branch and clean
+        run: |
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+              git checkout gh-pages || git checkout -B gh-pages
+          else
+              git checkout -B gh-pages
+          fi
+          rm -rf docs
+
+      - name: Download Documentation Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: documentation-report
+          path: docs
+
+      - name: Commit and Push Documentation to gh-pages
+        run: |
+          git add docs
+          git commit -m "docs: Update documentation for gh-pages"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
