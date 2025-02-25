@@ -72,7 +72,7 @@ jobs:
         with:
           name: documentation-report
           path: docs
-          
+
       - name: List contents of docs directory
         run: |
           ls -la docs 
@@ -80,7 +80,7 @@ jobs:
       - name: Unzip the Documentation
         run: |
           cd docs
-          unzip documentation-report.zip
+          unzip documentation.zip
           
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v6
