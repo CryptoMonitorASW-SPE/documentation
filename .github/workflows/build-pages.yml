@@ -36,18 +36,22 @@ jobs:
           cd output
           mv report.html index.html
           cd ..
-          cp -r src/resources ../output
+          ls -la 
+          cp -r src/resources output/
+          ls -la src/
+          
 
-      - name: Create the zip archive
+      - name: List contents of docs directory
         run: |
-          cd asciidoc/output
-          zip -r documentation.zip index.html resources/    
+          ls -la asciidoc/output
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: documentation-report
-          path: asciidoc/output/documentation.zip
+          path: |
+            asciidoc/output/index.html
+            asciidoc/output/resources/
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -72,15 +76,6 @@ jobs:
         with:
           name: documentation-report
           path: docs
-
-      - name: List contents of docs directory
-        run: |
-          ls -la docs 
-
-      - name: Unzip the Documentation
-        run: |
-          cd docs
-          unzip documentation.zip
           
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v6
