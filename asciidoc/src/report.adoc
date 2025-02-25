@@ -8,16 +8,18 @@
 :rouge-style: github
 :xrefstyle: short
 :toc: macro
+:url-wolpertinger: https://en.wikipedia.org/wiki/Wolpertinger
+:imagesdir: resources
 
-include::asciidoc/header.adoc[]
+include::chapters/header.adoc[]
 
-include::asciidoc/introduction.adoc[]
+include::chapters/introduction.adoc[]
 
-include::asciidoc/chapter1.adoc[]
+include::chapters/chapter1.adoc[]
 
-include::asciidoc/chapter2.adoc[]
+include::chapters/chapter2.adoc[]
 
-include::asciidoc/conclusion.adoc[]
+include::chapters/conclusion.adoc[]
 
-image::{docdir}/../resources/png/admin_storytelling.png[]
+image::png/admin_storytelling.png[]
 
