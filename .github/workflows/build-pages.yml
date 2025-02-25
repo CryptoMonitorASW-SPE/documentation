@@ -72,6 +72,10 @@ jobs:
         with:
           name: documentation-report
           path: docs
+          
+      - name: List contents of docs directory
+        run: |
+          ls -la docs 
 
       - name: Unzip the Documentation
         run: |
