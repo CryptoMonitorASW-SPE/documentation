@@ -35,6 +35,7 @@ jobs:
           make html
           cd output
           mv report.html index.html
+          cd ..
           cp -r src/resources ../output
 
       - name: Create the zip archive
