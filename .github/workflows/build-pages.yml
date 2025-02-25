@@ -1,0 +1,34 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev build-essential
+          sudo gem install asciidoctor asciidoctor-diagram rouge
+
+      - name: Build documentation and copy it into Docs folder
+        run: |
+          cd asciidoc
+          make html
+          rm -rf ../docs
+          mkdir -p ../docs
+          cp output/report.html ../docs/index.html
