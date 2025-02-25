@@ -36,14 +36,7 @@ jobs:
           cd output
           mv report.html index.html
           cd ..
-          ls -la 
           cp -r src/resources output/
-          ls -la src/
-          
-
-      - name: List contents of docs directory
-        run: |
-          ls -la asciidoc/output
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
@@ -63,12 +56,7 @@ jobs:
 
       - name: Checkout gh-pages Branch and clean
         run: |
-          git fetch origin gh-pages || true
-          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
-              git checkout gh-pages || git checkout -B gh-pages
-          else
-              git checkout -B gh-pages
-          fi
+          git checkout gh-pages
           rm -rf docs
 
       - name: Download Documentation Artifact
