@@ -7,7 +7,7 @@ OUTPUT_PDF = output/report.pdf
 OUTPUT_HTML = output/report.html
 THEME_DIR = .
 THEME_NAME = src/report
-FONTS_DIR = resources/font/FiraCode
+FONTS_DIR = src/resources/font
 
 # Default target to build both PDF and HTML
 all: pdf html
