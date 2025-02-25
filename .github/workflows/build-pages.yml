@@ -38,10 +38,9 @@ jobs:
           cd ..
           cp -r src/resources ../output
 
-      - name: Create the zip archive
+      - name: List contents of docs directory
         run: |
-          cd asciidoc/output
-          zip -r documentation.zip index.html resources/ 
+          ls -la asciidoc/output
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
@@ -74,10 +73,6 @@ jobs:
         with:
           name: documentation-report
           path: docs
-
-      - name: List contents of docs directory
-        run: |
-          ls -la docs
           
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v6
