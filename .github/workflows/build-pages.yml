@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,6 +29,11 @@ jobs:
         run: |
           cd asciidoc
           make html
-          rm -rf ../docs
-          mkdir -p ../docs
-          cp output/report.html ../docs/index.html
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-report
+          path: output/report.html
+
+          
