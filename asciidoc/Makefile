@@ -6,8 +6,8 @@ INPUT_FILE = src/report.adoc
 OUTPUT_PDF = output/report.pdf
 OUTPUT_HTML = output/report.html
 THEME_DIR = .
-THEME_NAME = src/report
-FONTS_DIR = src/resources/font
+THEME_NAME = src/report-theme.yml
+FONTS_DIR = src/resources/font/FiraCode
 
 # Default target to build both PDF and HTML
 all: pdf html
