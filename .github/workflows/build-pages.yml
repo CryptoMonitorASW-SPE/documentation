@@ -19,11 +19,19 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
+      - name: Write apt packages list
+        run: echo "build-essential" > apt-packages-list
+
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('apt-packages-list') }}
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ruby ruby-dev build-essential
-          echo "ruby ruby-dev build-essential" > apt-packages-list
+          sudo apt-get install -y build-essential
 
       - name: Install Ruby gems
         run: |
