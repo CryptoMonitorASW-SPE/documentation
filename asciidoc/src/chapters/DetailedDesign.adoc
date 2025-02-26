@@ -1,0 +1,11 @@
+== Detailed Design
+
+=== Application Design
+
+=== Microservices Design
+
+//Alphabetical Order
+==== Authentication
+
+==== Crypto Market
+

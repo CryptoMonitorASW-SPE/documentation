@@ -1,0 +1,13 @@
+== DevOps Scenario
+
+=== Version control strategy
+(Branch Protection, Pull Request, Code Review, Git Hooks, Templates, GitFlow usage)
+
+=== Build Automation
+
+=== Continuous Integration
+
+Code quality, Testing, Release, Documentation, GHCR Images
+
+=== Containerization
+
