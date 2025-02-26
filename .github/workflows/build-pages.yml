@@ -19,15 +19,21 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
+      - name: Generate apt packages list
+        run: echo "build-essential" > apt-packages-list
+
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('apt-packages-list') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ruby ruby-dev build-essential
-          echo "ruby ruby-dev build-essential" > apt-packages-list
-
-      - name: Install Ruby gems
-        run: |
-          gem install --no-document asciidoctor asciidoctor-diagram rouge
+          sudo apt-get install -y build-essential
 
       - name: Build documentation and copy it into Docs folder
         run: |
