@@ -20,7 +20,7 @@ jobs:
           bundler-cache: true
 
       - name: Write apt packages list
-        run: echo "build-essential" > apt-packages-list
+        run: echo -e "build-essential\ngraphviz" > apt-packages-list
 
       - name: Cache apt packages
         uses: actions/cache@v4
@@ -45,6 +45,7 @@ jobs:
           mv report.html index.html
           cd ..
           cp -r src/resources output/
+          ls -la output
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
