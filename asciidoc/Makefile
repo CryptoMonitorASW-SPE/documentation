@@ -5,6 +5,7 @@ ASCIIDOCTOR_DIAGRAM = -r asciidoctor-diagram
 INPUT_FILE = src/report.adoc
 OUTPUT_PDF = output/report.pdf
 OUTPUT_HTML = output/report.html
+OUTPUT_FOLDER = output/
 THEME_DIR = .
 THEME_NAME = src/report-theme.yml
 FONTS_DIR = src/resources/font/FiraCode
@@ -31,5 +32,5 @@ html:
 
 # Target to clean the generated files
 clean:
-	rm -f $(OUTPUT_PDF) $(OUTPUT_HTML)
+	rm -rf $(OUTPUT_FOLDER)
 	@echo "Cleaned: $(OUTPUT_PDF) and $(OUTPUT_HTML)"
