@@ -1,1 +1,4 @@
 == Conclusion
+
+//example on how to import images correctly
+image::png/admin_storytelling.png[Admin Storytelling]

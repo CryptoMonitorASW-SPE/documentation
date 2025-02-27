@@ -1,17 +1,9 @@
-:diagram-nocache-option:
 == Domain Driven Design
 
-[plantuml, ddd, svg]
+//example how to correctly import a plantuml diagram
+[plantuml, usecaseauth, svg]
 ----
-@startuml
-package "Domain Driven Design" {
-  [Domain Driven Design] --> [Ubiquitous Language]
-  [Domain Driven Design] --> [Requirements Analysis]
-  [Domain Driven Design] --> [Event Storming]
-  [Domain Driven Design] --> [Context Map]
-  [Domain Driven Design] --> [Bounded Contexts]
-}
-@enduml
+!include resources/puml/usecase/usecase-auth.puml
 ----
 
 === Ubiquitous Language
