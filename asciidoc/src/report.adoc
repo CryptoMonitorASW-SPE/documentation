@@ -9,7 +9,8 @@
 :xrefstyle: short
 :toc: macro
 :imagesdir: resources
-:imagesoutdir: output/resources/svg
+:imagesoutdir: output/resources/
+:diagramsdir: svg
 
 include::chapters/Header.adoc[]
 

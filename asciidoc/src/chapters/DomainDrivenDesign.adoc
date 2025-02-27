@@ -1,7 +1,7 @@
 == Domain Driven Design
 
 //example how to correctly import a plantuml diagram
-[plantuml, usecaseauth, svg]
+[plantuml, {diagramsdir}/usecaseauth, svg]
 ----
 !include resources/puml/usecase/usecase-auth.puml
 ----
