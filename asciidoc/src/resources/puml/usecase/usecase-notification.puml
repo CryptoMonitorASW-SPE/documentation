@@ -1,0 +1,41 @@
+@startuml Crypto Watchlist System Use Cases
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Logged User" as LU
+actor "Notification System" as NS
+
+rectangle "Crypto Notification System" {
+  ' Main use cases from user stories
+  usecase "Create notification\nfrom watchlist" as UC13Create
+  usecase "Delete notification\nfrom watchlist" as UC13Delete
+  usecase "Enable notification" as UC14Enable
+  usecase "Disable notification" as UC14Disable
+  usecase "Receive notifications" as UC15
+  
+  ' Supporting use cases
+  usecase "Monitor crypto price" as Monitor
+  usecase "Send notification" as SendNotif
+  
+  ' Relationships 
+  LU --> UC13Create
+  LU --> UC13Delete
+  LU --> UC14Enable
+  LU --> UC14Disable
+  LU --> UC15
+  
+  UC13Create ..> Monitor : <<include>>
+  UC14Enable ..> Monitor : <<include>>
+  
+  UC13Delete ..> Monitor : <<extend>>
+  UC14Disable ..> Monitor : <<extend>>
+  
+  ' Notification System relationships
+  NS --> Monitor
+  NS --> SendNotif
+  SendNotif ..> UC15 : <<include>>
+  
+}
+
+@enduml
