@@ -22,12 +22,6 @@ jobs:
       - name: Write apt packages list
         run: echo -e "build-essential\ngraphviz" > apt-packages-list
 
-      - name: Cache apt packages
-        uses: actions/cache@v4
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('apt-packages-list') }}
-
       - name: Install system dependencies
         run: |
           sudo apt-get update
