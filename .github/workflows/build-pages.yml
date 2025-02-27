@@ -44,8 +44,12 @@ jobs:
           cd output
           mv report.html index.html
           cd ..
-          cp -r src/resources output/
-          ls -la output
+          rsync -av \
+          --exclude="*.drawio" \
+          --exclude="*.puml" \
+          --exclude="puml/" \
+          --exclude="drawio/" \
+          src/resources/ output/resources/
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
