@@ -12,35 +12,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+        
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: build-essential graphviz
+          version: 1.0
+          
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
-      
-      - name: Write apt packages list
-        run: echo -e "build-essential\ngraphviz" > apt-packages-list
-      
-      - name: Create custom apt cache directory
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/apt-cache/archives
-          mkdir -p $GITHUB_WORKSPACE/apt-cache/archives/partial
-          chmod -R 777 $GITHUB_WORKSPACE/apt-cache
-      
-      - name: Cache apt packages
-        id: cache-apt
-        uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/apt-cache/archives/*.deb
-          key: ${{ runner.os }}-apt-${{ hashFiles('apt-packages-list') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-      
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get -o dir::cache::archives=$GITHUB_WORKSPACE/apt-cache/archives install -y --no-install-recommends $(cat apt-packages-list)
       
       - name: Install Ruby gems
         run: |
