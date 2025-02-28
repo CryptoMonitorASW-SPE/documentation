@@ -624,29 +624,1265 @@ pre.rouge .gs {
 <h2 id="_introduction">1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>CryptoMonitor is a web-based application designed to effectively monitor and manage cryptocurrencies. It allows users to monitor live market trends, maintain individual portfolios, and receive customizable notifications for price fluctuations. With an interactive and intuitive interface, CryptoMonitor provides interactive charts, historical performance reports, and asset allocation information. Registered users can create a personalized watchlist, set up push notifications, and monitor investments in different currencies. Even without an account, one is welcome to browse live market data and trends. CryptoMonitor offers the tools to stay informed and make decisions based on knowledge, whether you are a professional trader or beginner.</p>
+<p>CryptoMonitor is a microservice-base web application designed to effectively monitor and manage
+cryptocurrencies. It allows users to monitor live market trends, maintain individual portfolios,
+and receive customizable notifications for price fluctuations. With an interactive and intuitive
+interface, CryptoMonitor provides interactive charts, historical performance reports, and asset
+allocation information. Registered users can create a personalized watchlist, set up push notifications,
+and monitor investments in different currencies. Even without an account, one is welcome to browse live
+market data and trends. CryptoMonitor offers the tools to stay informed and make decisions based on
+knowledge, whether you are a professional trader or beginner.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_domain_driven_design">2. Domain Driven Design</h2>
 <div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="resources/svg/usecaseauth.svg" alt="usecaseauth" width="769" height="871">
-</div>
+<div class="paragraph">
+<p>The first step in the development of the system has been to understand the domain in which the application will operate.
+The Domain name identified is CryptoMonitor, composed of the two words Crypto, so Cryptocurrencies and
+Monitor that stands for the verb Monitoring. So, the domain is about Monitoring Cryptocurrencies.</p>
 </div>
 <div class="sect2">
 <h3 id="_ubiquitous_language">2.1. Ubiquitous Language</h3>
-
+<div class="paragraph">
+<p>Once identified the domain name, the next step has been to define the Ubiquitous Language used by the team.
+In this phase, the key concepts related to the domain under analysis are identified. Subsequently, a glossary of terms
+and their definitions is created, establishing a shared language for all project stakeholders.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Term</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>System</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The application that gives access and functionality to not-logged users and logged users.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Application</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A tool accessible via the web.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Not-Logged User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A user who didn’t register to the system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Logged User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A user registered to the system that can access additional functionality, like having a personal wallet and a watchlist.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A person that uses the application.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Account</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data related to a user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Authentication</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A process where a not-logged user can become a logged user using their credentials.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Credentials</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A pair of email and password that identify an account.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wallet</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of crypto assets that the logged user owns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>WatchList</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of cryptos that the logged user decided to observe.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Asset</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data (buying price/date, selling price/date, quantity) related to a crypto that the user owns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Details</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data related to a crypto (name, symbol, price, market cap, 24h volume, price variation).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Notification</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A message from the system sent to a logged user related to a crypto in their watchlist.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A cryptocurrency.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Report</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An analysis of the wallet of a logged user during a timespan.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Performance</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The overall value trend of the wallet based on historical crypto prices, considering any purchase or sale operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Interactive Chart</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A visual representation that allows users to analyze historical cryptocurrency or wallet data with interactive features such as zoom, time filters, and customizable views.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>FIAT Currency</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A traditional currency used to compare the market value of cryptocurrencies (EUR, USD, etc.).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Price Variation</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluctuation in a crypto’s value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>24h Volume</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total trading value of a cryptocurrency over the last 24 hours.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Market Cap</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total value of a cryptocurrency, calculated by multiplying its current price by the total circulating supply.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Transaction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A movement of a crypto related to the wallet. It can be a purchase or a sale and is used to track the asset.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Market</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of the most important cryptocurrencies.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Price Limits</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A threshold on the price of a crypto.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_requirements_analysis">2.2. Requirements Analysis</h3>
-
+<div class="paragraph">
+<p>Here are listed the requirements identified during the analysis phase. They are divided into system, business and functional requirements.
+To enforce the analysis, the requirements are also linked to the use cases and user stories, providing also a detail description of them.</p>
+</div>
+<div class="sect3">
+<h4 id="_system_requirements">2.2.1. <em>System Requirements</em></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The system has to provide login, registration, and logout in a safe way.</p>
+</li>
+<li>
+<p>The system has to provide a page to see the info related to the account.</p>
+</li>
+<li>
+<p>The system has to allow the user to edit the info related to the account.</p>
+</li>
+<li>
+<p>The system has to allow the user to monitor the crypto market.</p>
+</li>
+<li>
+<p>The system has to allow the user to see a detail for each crypto.</p>
+</li>
+<li>
+<p>The system has to allow the logged user to access his wallet and see reports of its historic performance.</p>
+</li>
+<li>
+<p>The system has to allow the logged user to add and remove transactions in the wallet.</p>
+</li>
+<li>
+<p>The system has to allow the logged user to access his watchlist.</p>
+</li>
+<li>
+<p>The system has to allow the logged user to add or remove cryptos to his watchlist.</p>
+</li>
+<li>
+<p>The system has to allow the logged user to set price limits on the cryptos present in the watchlist that can trigger notifications when they’re crossed.</p>
+</li>
+<li>
+<p>The system has to allow all the users to visualize the crypto’s prices in different FIAT values.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_business_requirements">2.2.2. <em>Business Requirements</em></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The system must allow all users to monitor the cryptocurrency market in real-time.</p>
+</li>
+<li>
+<p>The system must allow users to access detailed information about each cryptocurrency.</p>
+</li>
+<li>
+<p>The system must provide logged-in users with tools to manage a personal wallet and analyze its historical performance.</p>
+</li>
+<li>
+<p>The system must notify logged-in users of significant price changes or configured limits.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_functional_requirements">2.2.3. <em>Functional Requirements</em></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The system must provide secure registration, login and logout functionalities.</p>
+</li>
+<li>
+<p>The system must provide a page to visualise the account.</p>
+</li>
+<li>
+<p>The system must allow users to edit the information related to the account.</p>
+</li>
+<li>
+<p>The system must display cryptocurrency prices in different FIAT currencies (e.g., EUR, USD).</p>
+</li>
+<li>
+<p>The system must allow users to view details about cryptocurrencies, including:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The symbol and name of the cryptocurrency.</p>
+</li>
+<li>
+<p>The price in FIAT currencies.</p>
+</li>
+<li>
+<p>Price variations over a specified timespan.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The system must allow users to filter and sort the crypto market.</p>
+</li>
+<li>
+<p>The system must allow logged-in users to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Access their wallet.</p>
+</li>
+<li>
+<p>Add and remove transactions in the wallet.</p>
+</li>
+<li>
+<p>View reports of the wallet’s historical performance.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The system must allow logged-in users to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Access their watchlist</p>
+</li>
+<li>
+<p>Add and remove cryptocurrencies from their watchlist.</p>
+</li>
+<li>
+<p>Configure price limits on cryptocurrencies in the watchlist.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The system must generate notifications when configured price limits are crossed.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_use_cases_and_user_stories_authentication">2.2.4. <em>Use Cases and User stories: Authentication</em></h4>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/usecaseauth.svg" alt="usecaseauth" width="791" height="550">
+</div>
+<div class="title">Figure 1. Use Case Diagram: Authentication</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US1: Registration</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a not-logged user,
+I want to register an account
+so that I can access the system's features.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is not registered to the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is registered to the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the sign-up button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user must be able to access the registration page.</p>
+<p class="tableblock">- The registration form must validate inputs (e.g., email format, password strength).</p>
+<p class="tableblock">- The system should display an error message for invalid or duplicate emails.</p>
+<p class="tableblock">- On successful registration, the user is redirected to the login page.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Invalid email format.</p>
+<p class="tableblock">- Weak password.</p>
+<p class="tableblock">- Duplicate email.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US2: Login</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a not-logged user
+I want to authenticate into an account
+so that i can access to my private data</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is not logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the sign-in button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user must be able to access the login page.</p>
+<p class="tableblock">- The system should display an error message for invalid credentials.</p>
+<p class="tableblock">- On successful authentication, the user is redirected to the account page.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Invalid credentials.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US3: Logout</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to log out of my account
+so that i can securely end my session.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is not logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the logout button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user can log out from the account page.</p>
+<p class="tableblock">- After logout, the user is redirected to the homepage.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_use_cases_and_user_stories_generic">2.2.5. <em>Use Cases and User stories: Generic</em></h4>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/usecasegeneric.svg" alt="usecasegeneric" width="773" height="550">
+</div>
+<div class="title">Figure 2. Use Case Diagram: Generic</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US4: View Account</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to see details of my account
+so that i can see my information and logout.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can see details of his account</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the account detail button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user can see his info on the account page.</p>
+<p class="tableblock">- If the system is not working, an error message is shown.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system is down.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US5: Edit Account</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to edit my account information
+so that I can update my personal data.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is on the account page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User account information is updated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the edit account button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system displays the form to edit the account’s fields.</p>
+<p class="tableblock">- The user edits his account’s fields.</p>
+<p class="tableblock">- If the system is not working, an error message is shown.</p>
+<p class="tableblock">- If the edit is not successful, an error message is shown.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system is down.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US6: Monitor Crypto Market</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a user (both logged and not logged),
+I want to access the homepage,
+So that I can monitor the cryptocurrency market.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Not logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the homepage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user presses the home button or accesses the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The homepage displays information about cryptocurrencies.</p>
+<p class="tableblock">- If the system is not working, an error message is shown.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system is down.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Technical Details</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Display the symbol, name, and price of each cryptocurrency.</p>
+<p class="tableblock">- Show prices in FIAT currency.</p>
+<p class="tableblock">- Include price variation within a specific timespan (24h volume), the market cap.</p>
+<p class="tableblock">- Allow filtering and sorting on the market.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US7: Watch a Crypto</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a user (both logged and not logged),
+I want to access the crypto details,,
+So that I can monitor the specific crypto.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Not logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the detail page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on a crypto in the list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- If the system is down, an error message should indicate the issue.</p>
+<p class="tableblock">- The page displays information about the selected crypto.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Technical Details</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Display the symbol, name of each cryptocurrency and the chart.</p>
+<p class="tableblock">- Show prices in FIAT currency.</p>
+<p class="tableblock">- Include Circulating Supply, Max Supply, All Time High, All Time High Change, Useful Links, and Community Sentiment.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US8: Access Wallet</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user,
+I want to access my wallet,
+So that I can monitor my wallet history and value.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the wallet page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the wallet button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The page displays information about the wallet.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user is in the wallet page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The wallet performance report is displayed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the report button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The page displays information about the wallet performance.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US9: Manage Transaction</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user,
+I want to add/remove transactions into my wallet,
+So that I can keep track of my owned crypto and update the wallet history.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the wallet page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The transaction is saved in the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the save transaction button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user can see if the transaction succeeded.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system is down.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the wallet page and the transaction is shown in the wallet</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The transaction is removed from the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the remove transaction button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user can see if the transaction removal succeeded.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The system is down.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US10: Access Watchlist</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user,
+I want to access to my watchlist,
+So that I can manage my preferred cryptos.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is logged into the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User can access the watchlist page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the watchlist button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The page displays all the crypto added to the watchlist.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US11: Add Crypto to Watchlist</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user,
+I want to add/remove cryptos to my watchlist,
+So that I can monitor the preferred cryptos.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is on the crypto detail page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The crypto is added to the watchlist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the “add to watchlist” button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user knows if the add was successful.</p>
+<p class="tableblock">- The crypto is shown in the watchlist page.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US12: Remove Crypto from Watchlist</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user,
+I want to remove cryptos from my watchlist,
+So that I can manage the preferred cryptos.</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is on the watchlist page and the crypto is in the watchlist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The crypto is removed from the watchlist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the “Delete” button on the crypto row</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user knows if the removal was successful.</p>
+<p class="tableblock">- The crypto is not shown anymore in the watchlist page.</p>
+<p class="tableblock">- If the system is down, an error message should indicate the issue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_use_cases_and_user_stories_notification">2.2.6. <em>Use Cases and User stories: Notification</em></h4>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/usecasenotification.svg" alt="usecasenotification" width="809" height="550">
+</div>
+<div class="title">Figure 3. Use Case Diagram: Notification</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US13: Create/Delete notification from watchlist</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to create/delete notification from my watchlist,
+So that I can keep track of the price of my watched cryptos</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Notification system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the watchlist page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The notification is created for the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the “enable notification” button and completes the form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The notification system starts monitoring the price.</p>
+<p class="tableblock">- If an error occurs, the system notifies the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Technical Details</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The user can add a threshold price for a crypto.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Notification System</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the watchlist page, and the user goes to the notification list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The notification is deleted for the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User clicks on the “delete notification” button on a notification</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The notification system stops monitoring the crypto.</p>
+<p class="tableblock">- If an error occurs, the system notifies the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US14: Enable/Disable notification</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to enable/disable notification from my watchlist,
+So that I can manage the notifications of my watched cryptos</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Notification system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the watchlist page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The notification is enabled for the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User uses the active switch and sets it to active</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The notification system starts monitoring the price.</p>
+<p class="tableblock">- If an error occurs, the system notifies the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged user, Notification system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User is in the watchlist page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The notification is disabled for the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User uses the active switch and sets it to inactive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The notification system stops monitoring the price.</p>
+<p class="tableblock">- If an error occurs, the system notifies the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US15: Receive notification</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to receive notifications from the system,
+So that I can be informed about the price of my watched cryptos</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification System, Logged User</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification is active for a crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The logged user is notified</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The monitored crypto reaches the price limit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- A notification is sent to the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>US16: Monitor Crypto Price</strong></p>
+<div class="literalblock">
+<div class="content">
+<pre>As a logged user
+I want to monitor the price of a crypto,
+So that I can be informed about the price of my watched cryptos</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Actors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification System, Logged user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Precondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification is active for a crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Postcondition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Notification System monitors the price of the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Trigger</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User sets a price limit for a crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Acceptance Criteria</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- The Notification System monitors the price of the crypto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Exceptions</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- API issue</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_event_storming">2.3. Event Storming</h3>
-
+<div class="paragraph">
+<p>The knowledge crunching session was conducted using the Event Storming approach, that facilitates collaboration between developers
+and domain experts to explore and define the project&#8217;s domain. By utilizing color-coded sticky notes, the team iteratively identifies key elements,
+including actors, domain events, commands and views/read models, ensuring a comprehensive understanding of the system&#8217;s behavior and requirements.
+The steps followed during the Event Storming session are described as follows, until to the production of the context map.</p>
+</div>
+<div class="sect3">
+<h4 id="_step_1_identify_domain_events">2.3.1. <em>Step 1: Identify Domain Events</em></h4>
+<div class="paragraph">
+<p>Here are the domain events that can happen in the system identified during the Event Storming session:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/domain-events.png" alt="Domain Events">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_step_2_sorting_and_grouping_domain_events">2.3.2. <em>Step 2: Sorting and Grouping Domain Events</em></h4>
+<div class="paragraph">
+<p>The domain events are grouped into categories to facilitate the understanding of the system&#8217;s behavior:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/domain-events-sorted.png" alt="Grouped Domain Events">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_step_3_timeline">2.3.3. <em>Step 3: Timeline</em></h4>
+<div class="paragraph">
+<p>The timeline is created to visualize the sequence of events and the flow of information in the system:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/timeline.png" alt="Timeline">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_step_4_user_actions_external_systems_and_business_process">2.3.4. <em>Step 4: User Actions, External systems and Business Process</em></h4>
+<div class="paragraph">
+<p>The user actions (Commands, Actors, Read Model), external systems, and business processes are identified to understand the system&#8217;s interactions:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/domain-events-complete.png" alt="User Actions" width="External Systems" height="and Business Process">
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_context_map">2.4. Context Map</h3>
@@ -846,7 +2082,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-28 20:11:44 UTC
+Last updated 2025-02-28 20:48:59 UTC
 </div>
 </div>
 </body>
