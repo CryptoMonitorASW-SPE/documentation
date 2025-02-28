@@ -1,7 +1,51 @@
 == DevOps Scenario
 
-=== Version control strategy
-(Branch Protection, Pull Request, Code Review, Git Hooks, Templates, GitFlow usage)
+=== Licensing
+We have selected the link:https://opensource.org/licenses/MIT[MIT License] for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.
+
+=== Versioning
+We have adopted the Semantic Versioning (SemVer) scheme for versioning our software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.
+
+To manage the process, we decided to use the link:https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin[Git Sensitive Semantic Versioning Gradle Plugin], configured with the link:https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin[Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin]. This approach allowed us to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.
+
+The software is released via CI through link:https://github.com/semantic-release/semantic-release[semantic-release] that automatically determines the next version number based on the commit messages and releases the software on GitHub.
+
+=== Branch Management
+We implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.
+
+==== Branch Organization
+Our system used two primary branches:
+
+*main*: Contains production-ready code, updated at project milestones
+
+*develop*: Collects all updates and ongoing development work
+
+For feature development, we created separate branches that merged via pull requests into develop upon completion.
+
+==== Merge Strategy
+All merges to the develop branch followed a strict protocol:
+
+Only pull requests allowed for merging
+Rebase the feature branch onto develop before merging
+Merge strategy enforced (no merge commits)
+Linear history maintained throughout
+Feature branches deleted after successful merge
+
+==== Protection Rules
+Through branch rulesets, we enforced several key protections for the primary branches:
+
+* Restrict deletions
+* Require signed commits
+* Require a pull request before merging, with merge option not allowed
+* Block force pushes
+* Pull requests can be closed only when the automated tests and linter checks are successful
+
+=== Git Hooks
+
+Git Hooks
+Conventional Commits + Linter
+
+Templates
 
 === Build Automation
 
