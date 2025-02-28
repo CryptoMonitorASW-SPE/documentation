@@ -433,6 +433,124 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge, pre.rouge .w {
+  color: #24292f;
+  background-color: #f6f8fa;
+}
+pre.rouge .k, pre.rouge .kd, pre.rouge .kn, pre.rouge .kp, pre.rouge .kr, pre.rouge .kt, pre.rouge .kv {
+  color: #cf222e;
+}
+pre.rouge .gr {
+  color: #f6f8fa;
+}
+pre.rouge .gd {
+  color: #82071e;
+  background-color: #ffebe9;
+}
+pre.rouge .nb {
+  color: #953800;
+}
+pre.rouge .nc {
+  color: #953800;
+}
+pre.rouge .no {
+  color: #953800;
+}
+pre.rouge .nn {
+  color: #953800;
+}
+pre.rouge .sr {
+  color: #116329;
+}
+pre.rouge .na {
+  color: #116329;
+}
+pre.rouge .nt {
+  color: #116329;
+}
+pre.rouge .gi {
+  color: #116329;
+  background-color: #dafbe1;
+}
+pre.rouge .ges {
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .kc {
+  color: #0550ae;
+}
+pre.rouge .l, pre.rouge .ld, pre.rouge .m, pre.rouge .mb, pre.rouge .mf, pre.rouge .mh, pre.rouge .mi, pre.rouge .il, pre.rouge .mo, pre.rouge .mx {
+  color: #0550ae;
+}
+pre.rouge .sb {
+  color: #0550ae;
+}
+pre.rouge .bp {
+  color: #0550ae;
+}
+pre.rouge .ne {
+  color: #0550ae;
+}
+pre.rouge .nl {
+  color: #0550ae;
+}
+pre.rouge .py {
+  color: #0550ae;
+}
+pre.rouge .nv, pre.rouge .vc, pre.rouge .vg, pre.rouge .vi, pre.rouge .vm {
+  color: #0550ae;
+}
+pre.rouge .o, pre.rouge .ow {
+  color: #0550ae;
+}
+pre.rouge .gh {
+  color: #0550ae;
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #0550ae;
+  font-weight: bold;
+}
+pre.rouge .s, pre.rouge .sa, pre.rouge .sc, pre.rouge .dl, pre.rouge .sd, pre.rouge .s2, pre.rouge .se, pre.rouge .sh, pre.rouge .sx, pre.rouge .s1, pre.rouge .ss {
+  color: #0a3069;
+}
+pre.rouge .nd {
+  color: #8250df;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #8250df;
+}
+pre.rouge .err {
+  color: #f6f8fa;
+  background-color: #82071e;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cm, pre.rouge .cp, pre.rouge .cpf, pre.rouge .c1, pre.rouge .cs {
+  color: #6e7781;
+}
+pre.rouge .gl {
+  color: #6e7781;
+}
+pre.rouge .gt {
+  color: #6e7781;
+}
+pre.rouge .ni {
+  color: #24292f;
+}
+pre.rouge .si {
+  color: #24292f;
+}
+pre.rouge .ge {
+  color: #24292f;
+  font-style: italic;
+}
+pre.rouge .gs {
+  color: #24292f;
+  font-weight: bold;
+}
+</style>
 </head>
 <body class="book">
 <div id="header">
@@ -586,12 +704,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>All merges to the develop branch followed a strict protocol:</p>
 </div>
-<div class="paragraph">
-<p>Only pull requests allowed for merging
-Rebase the feature branch onto develop before merging
-Merge strategy enforced (no merge commits)
-Linear history maintained throughout
-Feature branches deleted after successful merge</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Only pull requests allowed for merging</p>
+</li>
+<li>
+<p>Rebase the feature branch onto develop before merging</p>
+</li>
+<li>
+<p>Merge strategy enforced (no merge commits)</p>
+</li>
+<li>
+<p>Linear history maintained throughout</p>
+</li>
+<li>
+<p>No primary branches deleted after successful merge</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -623,8 +753,59 @@ Feature branches deleted after successful merge</p>
 <div class="sect2">
 <h3 id="_git_hooks">3.4. Git Hooks</h3>
 <div class="paragraph">
-<p>Git Hooks
-Conventional Commits + Linter</p>
+<p>We have configured Git hooks using <a href="https://github.com/typicode/husky">Husky</a> to automate and enforce certain checks before commits and pushes. Husky allows us to easily manage Git hooks and ensure that our codebase maintains high standards.</p>
+</div>
+<div class="paragraph">
+<p>The configuration includes the following hooks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>pre-commit</p>
+</li>
+<li>
+<p>commit-msg</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The pre-commit hook runs before committing, allowing code checks (e.g., linters or formatters). The commit-msg hook runs after the commit message is entered, enforcing message format or content rules.</p>
+</div>
+<div class="paragraph">
+<p>The configuration is different between Kotlin and Typescript projects, since they use different tools for code quality checks.</p>
+</div>
+<div class="paragraph">
+<p>(Code for Kotlin Projects - commit-msg)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell">./gradlew ktlintCheck
+npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</span> <span class="nv">$1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Code for Typescript Projects - commit-msg)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell">npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</span> <span class="nv">$1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Code for Kotlin Projects - pre-commit)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell">./gradlew ktLintFormat</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Code for Typescript Projects - pre-commit)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell">npx lint-staged</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Templates</p>
@@ -665,7 +846,7 @@ Conventional Commits + Linter</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-28 18:28:02 UTC
+Last updated 2025-02-28 19:48:59 UTC
 </div>
 </div>
 </body>
