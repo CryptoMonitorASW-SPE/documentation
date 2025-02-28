@@ -22,10 +22,19 @@ jobs:
       - name: Write apt packages list
         run: echo -e "build-essential\ngraphviz" > apt-packages-list
 
+      - name: Cache apt packages
+        id: cache-apt
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('apt-packages-list') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y $(cat apt-packages-list)
+          sudo apt-get install -y --no-install-recommends $(cat apt-packages-list)
 
       - name: Install Ruby gems
         run: |
