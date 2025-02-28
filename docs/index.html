@@ -487,10 +487,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_devops_scenario">3. DevOps Scenario</a>
 <ul class="sectlevel2">
-<li><a href="#_version_control_strategy">3.1. Version control strategy</a></li>
-<li><a href="#_build_automation">3.2. Build Automation</a></li>
-<li><a href="#_continuous_integration">3.3. Continuous Integration</a></li>
-<li><a href="#_containerization">3.4. Containerization</a></li>
+<li><a href="#_licensing">3.1. Licensing</a></li>
+<li><a href="#_versioning">3.2. Versioning</a></li>
+<li><a href="#_branch_management">3.3. Branch Management</a></li>
+<li><a href="#_git_hooks">3.4. Git Hooks</a></li>
+<li><a href="#_build_automation">3.5. Build Automation</a></li>
+<li><a href="#_continuous_integration">3.6. Continuous Integration</a></li>
+<li><a href="#_containerization">3.7. Containerization</a></li>
 </ul>
 </li>
 <li><a href="#_deployment">4. Deployment</a></li>
@@ -541,23 +544,104 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_devops_scenario">3. DevOps Scenario</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_version_control_strategy">3.1. Version control strategy</h3>
+<h3 id="_licensing">3.1. Licensing</h3>
 <div class="paragraph">
-<p>(Branch Protection, Pull Request, Code Review, Git Hooks, Templates, GitFlow usage)</p>
+<p>We have selected the <a href="https://opensource.org/licenses/MIT">MIT License</a> for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_automation">3.2. Build Automation</h3>
+<h3 id="_versioning">3.2. Versioning</h3>
+<div class="paragraph">
+<p>We have adopted the Semantic Versioning (SemVer) scheme for versioning our software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.</p>
+</div>
+<div class="paragraph">
+<p>To manage the process, we decided to use the <a href="https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin">Git Sensitive Semantic Versioning Gradle Plugin</a>, configured with the <a href="https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin">Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin</a>. This approach allowed us to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.</p>
+</div>
+<div class="paragraph">
+<p>The software is released via CI through <a href="https://github.com/semantic-release/semantic-release">semantic-release</a> that automatically determines the next version number based on the commit messages and releases the software on GitHub.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_branch_management">3.3. Branch Management</h3>
+<div class="paragraph">
+<p>We implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.</p>
+</div>
+<div class="sect3">
+<h4 id="_branch_organization">3.3.1. Branch Organization</h4>
+<div class="paragraph">
+<p>Our system used two primary branches:</p>
+</div>
+<div class="paragraph">
+<p><strong>main</strong>: Contains production-ready code, updated at project milestones</p>
+</div>
+<div class="paragraph">
+<p><strong>develop</strong>: Collects all updates and ongoing development work</p>
+</div>
+<div class="paragraph">
+<p>For feature development, we created separate branches that merged via pull requests into develop upon completion.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_merge_strategy">3.3.2. Merge Strategy</h4>
+<div class="paragraph">
+<p>All merges to the develop branch followed a strict protocol:</p>
+</div>
+<div class="paragraph">
+<p>Only pull requests allowed for merging
+Rebase the feature branch onto develop before merging
+Merge strategy enforced (no merge commits)
+Linear history maintained throughout
+Feature branches deleted after successful merge</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_protection_rules">3.3.3. Protection Rules</h4>
+<div class="paragraph">
+<p>Through branch rulesets, we enforced several key protections for the primary branches:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Restrict deletions</p>
+</li>
+<li>
+<p>Require signed commits</p>
+</li>
+<li>
+<p>Require a pull request before merging, with merge option not allowed</p>
+</li>
+<li>
+<p>Block force pushes</p>
+</li>
+<li>
+<p>Pull requests can be closed only when the automated tests and linter checks are successful</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_git_hooks">3.4. Git Hooks</h3>
+<div class="paragraph">
+<p>Git Hooks
+Conventional Commits + Linter</p>
+</div>
+<div class="paragraph">
+<p>Templates</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_automation">3.5. Build Automation</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_continuous_integration">3.3. Continuous Integration</h3>
+<h3 id="_continuous_integration">3.6. Continuous Integration</h3>
 <div class="paragraph">
 <p>Code quality, Testing, Release, Documentation, GHCR Images</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_containerization">3.4. Containerization</h3>
+<h3 id="_containerization">3.7. Containerization</h3>
 
 </div>
 </div>
@@ -581,7 +665,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-27 16:26:15 UTC
+Last updated 2025-02-28 18:24:54 UTC
 </div>
 </div>
 </body>
