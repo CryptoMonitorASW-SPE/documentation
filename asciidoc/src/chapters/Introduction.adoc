@@ -1,3 +1,10 @@
 == Introduction
 
-CryptoMonitor is a web-based application designed to effectively monitor and manage cryptocurrencies. It allows users to monitor live market trends, maintain individual portfolios, and receive customizable notifications for price fluctuations. With an interactive and intuitive interface, CryptoMonitor provides interactive charts, historical performance reports, and asset allocation information. Registered users can create a personalized watchlist, set up push notifications, and monitor investments in different currencies. Even without an account, one is welcome to browse live market data and trends. CryptoMonitor offers the tools to stay informed and make decisions based on knowledge, whether you are a professional trader or beginner.
+CryptoMonitor is a microservice-base web application designed to effectively monitor and manage
+cryptocurrencies. It allows users to monitor live market trends, maintain individual portfolios,
+and receive customizable notifications for price fluctuations. With an interactive and intuitive
+interface, CryptoMonitor provides interactive charts, historical performance reports, and asset
+allocation information. Registered users can create a personalized watchlist, set up push notifications,
+and monitor investments in different currencies. Even without an account, one is welcome to browse live
+market data and trends. CryptoMonitor offers the tools to stay informed and make decisions based on
+knowledge, whether you are a professional trader or beginner.

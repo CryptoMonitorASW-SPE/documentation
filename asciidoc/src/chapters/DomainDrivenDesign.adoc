@@ -1,16 +1,822 @@
 == Domain Driven Design
-
+The first step in the development of the system has been to understand the domain in which the application will operate.
+The Domain name identified is CryptoMonitor, composed of the two words Crypto, so Cryptocurrencies and
+Monitor that stands for the verb Monitoring. So, the domain is about Monitoring Cryptocurrencies.
 //example how to correctly import a plantuml diagram
-[plantuml, {diagramsdir}/usecaseauth, svg]
+// [plantuml, {diagramsdir}/usecaseauth, svg]
+// ----
+// !include resources/puml/usecase/usecase-auth.puml
+// ----
+
+=== Ubiquitous Language
+Once identified the domain name, the next step has been to define the Ubiquitous Language used by the team.
+In this phase, the key concepts related to the domain under analysis are identified. Subsequently, a glossary of terms
+and their definitions is created, establishing a shared language for all project stakeholders.
+
+[cols="1,2"]
+|===
+| Term | Definition
+
+| *System*
+| The application that gives access and functionality to not-logged users and logged users.
+
+| *Application*
+| A tool accessible via the web.
+
+| *Not-Logged User*
+| A user who didn’t register to the system.
+
+| *Logged User*
+| A user registered to the system that can access additional functionality, like having a personal wallet and a watchlist.
+
+| *User*
+| A person that uses the application.
+
+| *Account*
+| A set of data related to a user.
+
+| *Authentication*
+| A process where a not-logged user can become a logged user using their credentials.
+
+| *Credentials*
+| A pair of email and password that identify an account.
+
+| *Wallet*
+| A list of crypto assets that the logged user owns.
+
+| *WatchList*
+| A list of cryptos that the logged user decided to observe.
+
+| *Crypto Asset*
+| A set of data (buying price/date, selling price/date, quantity) related to a crypto that the user owns.
+
+| *Crypto Details*
+| A set of data related to a crypto (name, symbol, price, market cap, 24h volume, price variation).
+
+| *Notification*
+| A message from the system sent to a logged user related to a crypto in their watchlist.
+
+| *Crypto*
+| A cryptocurrency.
+
+| *Report*
+| An analysis of the wallet of a logged user during a timespan.
+
+| *Performance*
+| The overall value trend of the wallet based on historical crypto prices, considering any purchase or sale operations.
+
+| *Interactive Chart*
+| A visual representation that allows users to analyze historical cryptocurrency or wallet data with interactive features such as zoom, time filters, and customizable views.
+
+| *FIAT Currency*
+| A traditional currency used to compare the market value of cryptocurrencies (EUR, USD, etc.).
+
+| *Price Variation*
+| Fluctuation in a crypto’s value.
+
+| *24h Volume*
+| The total trading value of a cryptocurrency over the last 24 hours.
+
+| *Market Cap*
+| The total value of a cryptocurrency, calculated by multiplying its current price by the total circulating supply.
+
+| *Transaction*
+| A movement of a crypto related to the wallet. It can be a purchase or a sale and is used to track the asset.
+
+| *Crypto Market*
+| A set of the most important cryptocurrencies.
+
+| *Price Limits*
+| A threshold on the price of a crypto.
+
+|===
+
+=== Requirements Analysis
+Here are listed the requirements identified during the analysis phase. They are divided into system, business and functional requirements.
+To enforce the analysis, the requirements are also linked to the use cases and user stories, providing also a detail description of them.
+
+==== _System Requirements_
+1. The system has to provide login, registration, and logout in a safe way.
+2. The system has to provide a page to see the info related to the account.
+3. The system has to allow the user to edit the info related to the account.
+4. The system has to allow the user to monitor the crypto market.
+5. The system has to allow the user to see a detail for each crypto.
+6. The system has to allow the logged user to access his wallet and see reports of its historic performance.
+7. The system has to allow the logged user to add and remove transactions in the wallet.
+8. The system has to allow the logged user to access his watchlist.
+9. The system has to allow the logged user to add or remove cryptos to his watchlist.
+10. The system has to allow the logged user to set price limits on the cryptos present in the watchlist that can trigger notifications when they’re crossed.
+11. The system has to allow all the users to visualize the crypto’s prices in different FIAT values.
+
+==== _Business Requirements_
+1. The system must allow all users to monitor the cryptocurrency market in real-time.
+2. The system must allow users to access detailed information about each cryptocurrency.
+3. The system must provide logged-in users with tools to manage a personal wallet and analyze its historical performance.
+4. The system must notify logged-in users of significant price changes or configured limits.
+
+==== _Functional Requirements_
+1. The system must provide secure registration, login and logout functionalities.
+2. The system must provide a page to visualise the account.
+3. The system must allow users to edit the information related to the account.
+4. The system must display cryptocurrency prices in different FIAT currencies (e.g., EUR, USD).
+5. The system must allow users to view details about cryptocurrencies, including:
+** The symbol and name of the cryptocurrency.
+** The price in FIAT currencies.
+** Price variations over a specified timespan.
+6. The system must allow users to filter and sort the crypto market.
+7. The system must allow logged-in users to:
+** Access their wallet.
+** Add and remove transactions in the wallet.
+** View reports of the wallet’s historical performance.
+8. The system must allow logged-in users to:
+** Access their watchlist
+** Add and remove cryptocurrencies from their watchlist.
+** Configure price limits on cryptocurrencies in the watchlist.
+9. The system must generate notifications when configured price limits are crossed.
+
+==== _Use Cases and User stories: Authentication_
+[plantuml, {diagramsdir}/usecaseauth, svg, title="Use Case Diagram: Authentication"]
 ----
 !include resources/puml/usecase/usecase-auth.puml
 ----
+* *US1: Registration*
 
-=== Ubiquitous Language
+    As a not-logged user,
+    I want to register an account
+    so that I can access the system's features.
 
-=== Requirements Analysis
+[cols="1,1"]
+|===
+
+| *Actors*
+| Not logged user
+
+| *Precondition*
+| User is not registered to the system
+
+| *Postcondition*
+| User is registered to the system
+
+| *Trigger*
+| User clicks on the sign-up button
+
+| *Acceptance Criteria*
+|
+- The user must be able to access the registration page.
+
+- The registration form must validate inputs (e.g., email format, password strength).
+
+- The system should display an error message for invalid or duplicate emails.
+
+- On successful registration, the user is redirected to the login page.
+
+| *Exceptions*
+|
+- Invalid email format.
+
+- Weak password.
+
+- Duplicate email.
+|===
+
+
+* *US2: Login*
+
+    As a not-logged user
+    I want to authenticate into an account
+    so that i can access to my private data
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Not logged user
+
+| *Precondition*
+| User is not logged into the system
+
+| *Postcondition*
+| User is logged into the system
+
+| *Trigger*
+| User clicks on the sign-in button
+
+| *Acceptance Criteria*
+|
+- The user must be able to access the login page.
+
+- The system should display an error message for invalid credentials.
+
+- On successful authentication, the user is redirected to the account page.
+
+| *Exceptions*
+|
+- Invalid credentials.
+|===
+
+* *US3: Logout*
+
+    As a logged user
+    I want to log out of my account
+    so that i can securely end my session.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is logged into the system
+
+| *Postcondition*
+| User is not logged into the system
+
+| *Trigger*
+| User clicks on the logout button
+
+| *Acceptance Criteria*
+|
+- The user can log out from the account page.
+
+- After logout, the user is redirected to the homepage.
+|===
+
+==== _Use Cases and User stories: Generic_
+[plantuml, {diagramsdir}/usecasegeneric, svg, title="Use Case Diagram: Generic"]
+----
+!include resources/puml/usecase/usecase-generic.puml
+----
+
+* *US4: View Account*
+
+    As a logged user
+    I want to see details of my account
+    so that i can see my information and logout.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is logged into the system
+
+| *Postcondition*
+| User can see details of his account
+
+| *Trigger*
+| User clicks on the account detail button
+
+| *Acceptance Criteria*
+|
+- The user can see his info on the account page.
+
+- If the system is not working, an error message is shown.
+
+| *Exceptions*
+|
+- The system is down.
+|===
+
+* *US5: Edit Account*
+
+    As a logged user
+    I want to edit my account information
+    so that I can update my personal data.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is on the account page
+
+| *Postcondition*
+| User account information is updated
+
+| *Trigger*
+| User clicks on the edit account button
+
+| *Acceptance Criteria*
+|
+- The system displays the form to edit the account’s fields.
+
+- The user edits his account’s fields.
+
+- If the system is not working, an error message is shown.
+
+- If the edit is not successful, an error message is shown.
+
+| *Exceptions*
+|
+- The system is down.
+|===
+
+* *US6: Monitor Crypto Market*
+
+    As a user (both logged and not logged),
+    I want to access the homepage,
+    So that I can monitor the cryptocurrency market.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Not logged user
+
+| *Precondition*
+| User can access the system
+
+| *Postcondition*
+| User can access the homepage
+
+| *Trigger*
+| The user presses the home button or accesses the system
+
+| *Acceptance Criteria*
+|
+- The homepage displays information about cryptocurrencies.
+
+- If the system is not working, an error message is shown.
+
+| *Exceptions*
+|
+- The system is down.
+
+| *Technical Details*
+|
+- Display the symbol, name, and price of each cryptocurrency.
+
+- Show prices in FIAT currency.
+
+- Include price variation within a specific timespan (24h volume), the market cap.
+
+- Allow filtering and sorting on the market.
+|===
+
+* *US7: Watch a Crypto*
+
+    As a user (both logged and not logged),
+    I want to access the crypto details,,
+    So that I can monitor the specific crypto.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Not logged user
+
+| *Precondition*
+| User can access the system
+
+| *Postcondition*
+| User can access the detail page
+
+| *Trigger*
+| User clicks on a crypto in the list
+
+| *Acceptance Criteria*
+|
+- If the system is down, an error message should indicate the issue.
+
+- The page displays information about the selected crypto.
+
+| *Exceptions*
+|
+- API issue
+
+| *Technical Details*
+|
+- Display the symbol, name of each cryptocurrency and the chart.
+
+- Show prices in FIAT currency.
+
+- Include Circulating Supply, Max Supply, All Time High, All Time High Change, Useful Links, and Community Sentiment.
+|===
+
+* *US8: Access Wallet*
+
+    As a logged user,
+    I want to access my wallet,
+    So that I can monitor my wallet history and value.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is logged into the system
+
+| *Postcondition*
+| User can access the wallet page
+
+| *Trigger*
+| User clicks on the wallet button
+
+| *Acceptance Criteria*
+|
+- The page displays information about the wallet.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- API issue.
+|===
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| The user is in the wallet page
+
+| *Postcondition*
+| The wallet performance report is displayed
+
+| *Trigger*
+| User clicks on the report button
+
+| *Acceptance Criteria*
+|
+- The page displays information about the wallet performance.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- API issue.
+|===
+
+* *US9: Manage Transaction*
+
+    As a logged user,
+    I want to add/remove transactions into my wallet,
+    So that I can keep track of my owned crypto and update the wallet history.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is in the wallet page
+
+| *Postcondition*
+| The transaction is saved in the system
+
+| *Trigger*
+| User clicks on the save transaction button
+
+| *Acceptance Criteria*
+|
+- The user can see if the transaction succeeded.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- The system is down.
+|===
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is in the wallet page and the transaction is shown in the wallet
+
+| *Postcondition*
+| The transaction is removed from the system
+
+| *Trigger*
+| User clicks on the remove transaction button
+
+| *Acceptance Criteria*
+|
+- The user can see if the transaction removal succeeded.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- The system is down.
+|===
+
+* *US10: Access Watchlist*
+
+    As a logged user,
+    I want to access to my watchlist,
+    So that I can manage my preferred cryptos.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is logged into the system
+
+| *Postcondition*
+| User can access the watchlist page
+
+| *Trigger*
+| User clicks on the watchlist button
+
+| *Acceptance Criteria*
+|
+- The page displays all the crypto added to the watchlist.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- API issue.
+|===
+
+* *US11: Add Crypto to Watchlist*
+
+    As a logged user,
+    I want to add/remove cryptos to my watchlist,
+    So that I can monitor the preferred cryptos.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is on the crypto detail page
+
+| *Postcondition*
+| The crypto is added to the watchlist
+
+| *Trigger*
+| User clicks on the “add to watchlist” button
+
+| *Acceptance Criteria*
+|
+- The user knows if the add was successful.
+
+- The crypto is shown in the watchlist page.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- API issue.
+|===
+
+* *US12: Remove Crypto from Watchlist*
+
+    As a logged user,
+    I want to remove cryptos from my watchlist,
+    So that I can manage the preferred cryptos.
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user
+
+| *Precondition*
+| User is on the watchlist page and the crypto is in the watchlist
+
+| *Postcondition*
+| The crypto is removed from the watchlist
+
+| *Trigger*
+| User clicks on the “Delete” button on the crypto row
+
+| *Acceptance Criteria*
+|
+- The user knows if the removal was successful.
+
+- The crypto is not shown anymore in the watchlist page.
+
+- If the system is down, an error message should indicate the issue.
+
+| *Exceptions*
+|
+- API issue.
+|===
+
+==== _Use Cases and User stories: Notification_
+[plantuml, {diagramsdir}/usecasenotification, svg, title="Use Case Diagram: Notification"]
+----
+!include resources/puml/usecase/usecase-notification.puml
+----
+
+* *US13: Create/Delete notification from watchlist*
+
+    As a logged user
+    I want to create/delete notification from my watchlist,
+    So that I can keep track of the price of my watched cryptos
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Notification system
+
+| *Precondition*
+| User is in the watchlist page
+
+| *Postcondition*
+| The notification is created for the crypto
+
+| *Trigger*
+| User clicks on the “enable notification” button and completes the form
+
+| *Acceptance Criteria*
+|
+- The notification system starts monitoring the price.
+
+- If an error occurs, the system notifies the user.
+
+| *Exceptions*
+|
+- API issue
+
+| *Technical Details*
+|
+- The user can add a threshold price for a crypto.
+|===
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Notification System
+
+| *Precondition*
+| User is in the watchlist page, and the user goes to the notification list
+
+| *Postcondition*
+| The notification is deleted for the crypto
+
+| *Trigger*
+| User clicks on the “delete notification” button on a notification
+
+| *Acceptance Criteria*
+|
+- The notification system stops monitoring the crypto.
+
+- If an error occurs, the system notifies the user.
+
+| *Exceptions*
+|
+- API issue
+|===
+
+* *US14: Enable/Disable notification*
+
+    As a logged user
+    I want to enable/disable notification from my watchlist,
+    So that I can manage the notifications of my watched cryptos
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Notification system
+
+| *Precondition*
+| User is in the watchlist page
+
+| *Postcondition*
+| The notification is enabled for the crypto
+
+| *Trigger*
+| User uses the active switch and sets it to active
+
+| *Acceptance Criteria*
+|
+- The notification system starts monitoring the price.
+
+- If an error occurs, the system notifies the user.
+
+| *Exceptions*
+|
+- API issue
+|===
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Logged user, Notification system
+
+| *Precondition*
+| User is in the watchlist page
+
+| *Postcondition*
+| The notification is disabled for the crypto
+
+| *Trigger*
+| User uses the active switch and sets it to inactive
+
+| *Acceptance Criteria*
+|
+- The notification system stops monitoring the price.
+
+- If an error occurs, the system notifies the user.
+
+| *Exceptions*
+|
+- API issue
+|===
+
+* *US15: Receive notification*
+
+    As a logged user
+    I want to receive notifications from the system,
+    So that I can be informed about the price of my watched cryptos
+
+[cols="1,1"]
+|===
+
+| *Actors*
+| Notification System, Logged User
+
+| *Precondition*
+| Notification is active for a crypto
+
+| *Postcondition*
+| The logged user is notified
+
+| *Trigger*
+| The monitored crypto reaches the price limit
+
+| *Acceptance Criteria*
+|
+- A notification is sent to the user.
+
+| *Exceptions*
+|
+- API issue
+|===
+
+* *US16: Monitor Crypto Price*
+
+        As a logged user
+        I want to monitor the price of a crypto,
+        So that I can be informed about the price of my watched cryptos
+
+[cols="1,1"]
+|===
+| *Actors*
+| Notification System, Logged user
+| *Precondition*
+| Notification is active for a crypto
+| *Postcondition*
+| The Notification System monitors the price of the crypto
+| *Trigger*
+| User sets a price limit for a crypto
+| *Acceptance Criteria*
+| - The Notification System monitors the price of the crypto
+| *Exceptions*
+| - API issue
+|===
 
 === Event Storming
+The knowledge crunching session was conducted using the Event Storming approach, that facilitates collaboration between developers
+and domain experts to explore and define the project's domain. By utilizing color-coded sticky notes, the team iteratively identifies key elements,
+including actors, domain events, commands and views/read models, ensuring a comprehensive understanding of the system's behavior and requirements.
+The steps followed during the Event Storming session are described as follows, until to the production of the context map.
+
+==== _Step 1: Identify Domain Events_
+Here are the domain events that can happen in the system identified during the Event Storming session:
+
+image::../resources/png/domain-events.png[Domain Events]
+
+==== _Step 2: Sorting and Grouping Domain Events_
+The domain events are grouped into categories to facilitate the understanding of the system's behavior:
+
+image::../resources/png/domain-events-sorted.png[Grouped Domain Events]
+
+==== _Step 3: Timeline_
+The timeline is created to visualize the sequence of events and the flow of information in the system:
+
+image::../resources/png/timeline.png[Timeline]
+
+==== _Step 4: User Actions, External systems and Business Process_
+The user actions (Commands, Actors, Read Model), external systems, and business processes are identified to understand the system's interactions:
+
+image::../resources/png/domain-events-complete.png[User Actions, External Systems, and Business Process]
 
 === Context Map
 
