@@ -25,11 +25,11 @@ For feature development, we created separate branches that merged via pull reque
 ==== Merge Strategy
 All merges to the develop branch followed a strict protocol:
 
-Only pull requests allowed for merging
-Rebase the feature branch onto develop before merging
-Merge strategy enforced (no merge commits)
-Linear history maintained throughout
-Feature branches deleted after successful merge
+* Only pull requests allowed for merging
+* Rebase the feature branch onto develop before merging
+* Merge strategy enforced (no merge commits)
+* Linear history maintained throughout
+* No primary branches deleted after successful merge
 
 ==== Protection Rules
 Through branch rulesets, we enforced several key protections for the primary branches:
@@ -42,8 +42,43 @@ Through branch rulesets, we enforced several key protections for the primary bra
 
 === Git Hooks
 
-Git Hooks
-Conventional Commits + Linter
+We have configured Git hooks using link:https://github.com/typicode/husky[Husky] to automate and enforce certain checks before commits and pushes. Husky allows us to easily manage Git hooks and ensure that our codebase maintains high standards.
+
+The configuration includes the following hooks:
+
+* pre-commit
+* commit-msg
+
+The pre-commit hook runs before committing, allowing code checks (e.g., linters or formatters). The commit-msg hook runs after the commit message is entered, enforcing message format or content rules.
+
+The configuration is different between Kotlin and Typescript projects, since they use different tools for code quality checks.
+
+(Code for Kotlin Projects - commit-msg)
+[source, shell]
+----
+./gradlew ktlintCheck
+npx --no-install commitlint --edit $1
+----
+
+(Code for Typescript Projects - commit-msg)
+[source, shell]
+----
+npx --no-install commitlint --edit $1
+----
+
+(Code for Kotlin Projects - pre-commit)
+[source, shell]
+----
+./gradlew ktLintFormat
+----
+
+(Code for Typescript Projects - pre-commit)
+[source, shell]
+----
+npx lint-staged
+----
+
+
 
 Templates
 
