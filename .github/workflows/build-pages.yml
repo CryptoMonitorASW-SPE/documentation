@@ -13,10 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: build-essential graphviz
-          version: 1.0
+      - name: Install APT packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential graphviz
           
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
