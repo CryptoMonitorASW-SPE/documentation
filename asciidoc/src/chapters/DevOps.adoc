@@ -86,7 +86,88 @@ Templates
 
 === Continuous Integration
 
-Code quality, Testing, Release, Documentation, GHCR Images
+At the purpose of making the project more reliable and maintainable, we have implemented various actions with GitHub Actions. The main actions are:
+
+* Release Workflow
+* Delete Branch on Rebase
+* PR Test Pipeline
+* Release
+
+==== Release
+This workflow automates the release process and is triggered by pushes to the main branch. It consists of a single job that:
+
+* Checks out the repository with full history to access all tags
+* Sets up Node.js environment
+* Installs project dependencies
+* Runs semantic-release to determine if a release is necessary based on commit messages
+
+If semantic-release determines a release is needed, it automatically:
+
+* Creates a new version based on commit conventions
+* Generates release notes
+* Creates a GitHub release
+* Tags the repository
+
+The release is done and signed by the CryptoMonitorCI-Bot user.
+
+==== Release Workflow
+This workflow is triggered by a published release. It consists of three main jobs:
+
+* Build and push Docker images:
+** Checks out the repository
+** Logs into GitHub Container Registry (GHCR)
+** Sets up Docker Buildx for multi-platform builds
+** Builds and pushes Docker images with appropriate tags
+** Verifies the pushed image
+
+* Build documentation:
+** Generates Dokka HTML documentation
+** Packages documentation files
+** Uploads as workflow artifact
+
+* Deploy documentation:
+** Downloads the documentation artifact
+** Switches to dokkaDoc branch
+** Updates documentation files
+** Signs and pushes changes with GPG key as CryptoMonitorCI-Bot
+
+==== Delete Branch on Rebase
+This workflow automatically removes branches after they have been successfully merged via pull requests. It doesn't delete protected branches like Main or Develop due to branch rulesets. The workflow:
+
+* Triggers on pull request closure
+* Verifies the pull request was merged
+* Checks if the branch is not the default branch
+* Attempts to delete the branch via GitHub API
+* Handles potential errors from branch protection rules
+
+==== PR Test Pipeline
+This workflow runs automated checks on every pull request (creation, update, or reopening).  Due to branch protection rules, both jobs must complete successfully before the pull request can be merged.
+
+For Kotlin projects:
+
+* *Test job*:
+** Checks out the code
+** Sets up Java environment
+** Configures Gradle caching
+** Executes the test suite
+
+* *Code quality job*:
+** Runs Detekt static code analysis
+** Posts analysis results as PR comments
+** Maintains persistent feedback through sticky comments
+
+For TypeScript projects:
+
+* *Test job*:
+** Runs Jest test suite
+** Checks test coverage thresholds
+** Reports test results
+
+* *Code quality job*:
+** Runs ESLint static analysis
+** Checks TypeScript compilation
+** Posts analysis results as PR comments
+** Maintains persistent feedback through sticky comments
 
 === Containerization
 
