@@ -2307,7 +2307,123 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 <div class="sect2">
 <h3 id="_containerization">3.7. Containerization</h3>
+<div class="paragraph">
+<p>Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.</p>
+</div>
+<div class="paragraph">
+<p>In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
+</div>
+<div class="sect3">
+<h4 id="_docker_configuration">3.7.1. Docker Configuration</h4>
+<div class="paragraph">
+<p>We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:</p>
+</div>
+<div class="sect4">
+<h5 id="_typescript_backend_dockerfile">TypeScript Backend Dockerfile</h5>
+<div class="paragraph">
+<p>For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="dockerfile"><span class="k">FROM</span><span class="w"> </span><span class="s">node:22.13-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build</span>
+<span class="k">WORKDIR</span><span class="s"> /usr/src/app</span>
+<span class="k">COPY</span><span class="s"> app/package*.json ./</span>
+<span class="k">RUN </span>npm <span class="nb">install</span>
+<span class="k">COPY</span><span class="s"> app/ ./</span>
+<span class="k">RUN </span>npm run build
 
+<span class="k">FROM</span><span class="w"> </span><span class="s">node:22.13-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build-final</span>
+<span class="k">RUN </span>apk update <span class="o">&amp;&amp;</span> apk upgrade
+<span class="k">RUN </span>apk <span class="nt">--no-cache</span> add curl
+<span class="k">WORKDIR</span><span class="s"> /usr/src/app</span>
+<span class="k">COPY</span><span class="s"> app/package*.json ./</span>
+<span class="k">RUN </span>npm <span class="nb">install</span> <span class="nt">--production</span>
+<span class="k">COPY</span><span class="s"> --from=build /usr/src/app/dist ./dist</span>
+<span class="k">EXPOSE</span><span class="s"> 3000</span>
+<span class="k">CMD</span><span class="s"> ["npm", "start"]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_kotlin_backend_dockerfile">Kotlin Backend Dockerfile</h5>
+<div class="paragraph">
+<p>For Kotlin microservices, we leverage the Gradle build system and JVM optimization techniques:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="dockerfile"><span class="k">FROM</span><span class="w"> </span><span class="s">gradle:8.12-jdk21</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build</span>
+
+<span class="k">COPY</span><span class="s"> app/build.gradle.kts settings.gradle.kts gradle.properties ./</span>
+<span class="k">RUN </span><span class="nb">mkdir</span> <span class="nt">-p</span> gradle
+<span class="k">COPY</span><span class="s"> gradle/libs.versions.toml gradle/</span>
+<span class="k">COPY</span><span class="s"> app/src src</span>
+
+<span class="k">RUN </span><span class="nt">--mount</span><span class="o">=</span><span class="nb">type</span><span class="o">=</span>cache,target<span class="o">=</span>/home/gradle/.gradle/caches gradle jar <span class="nt">--no-daemon</span> <span class="nt">--parallel</span> <span class="nt">--build-cache</span>
+
+<span class="k">FROM</span><span class="s"> openjdk:21-jdk-slim</span>
+
+<span class="k">RUN </span>apt-get update <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> curl
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+
+<span class="k">COPY</span><span class="s"> --from=build /home/gradle/build/libs/app.jar app.jar</span>
+
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
+
+<span class="k">ENTRYPOINT</span><span class="s"> ["java", "-jar", "app.jar"]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_vue_js_frontend_dockerfile">Vue.js Frontend Dockerfile</h5>
+<div class="paragraph">
+<p>For our Vue.js frontend application, we use a multi-stage build that compiles the application and serves it via Nginx:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="dockerfile"><span class="k">FROM</span><span class="w"> </span><span class="s">node:22.13-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build</span>
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">COPY</span><span class="s"> app/package*.json ./</span>
+<span class="k">RUN </span>npm <span class="nb">install</span>
+<span class="k">COPY</span><span class="s"> app/ .</span>
+<span class="k">RUN </span>npm run build
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">nginx:stable</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">prod-stage</span>
+<span class="k">COPY</span><span class="s"> --from=build /app/dist /usr/share/nginx/html</span>
+<span class="k">COPY</span><span class="s"> ./entrypoint.sh /entrypoint.sh</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /entrypoint.sh
+<span class="k">EXPOSE</span><span class="s"> 80</span>
+<span class="k">COPY</span><span class="s"> ./nginx.conf /etc/nginx/conf.d/nginx.conf.template</span>
+<span class="k">ENTRYPOINT</span><span class="s"> ["/entrypoint.sh"]</span>
+<span class="k">CMD</span><span class="s"> ["nginx", "-g", "daemon off;"]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The entrypoint.sh script is crucial for dynamically configuring Nginx with environment variables, allowing the frontend to communicate with various microservices:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell"><span class="c">#!/bin/sh</span>
+
+envsubst <span class="s1">'\
+    \${AUTHENTICATION_SERVICE_NAME} \${AUTHENTICATION_SERVICE_PORT} \
+    ${CRYPTOMARKET_SERVICE_NAME} \${CRYPTOMARKET_SERVICE_PORT}
+    \${USER_MANAGEMENT_SERVICE_NAME} \${USER_MANAGEMENT_SERVICE_PORT}
+    \${EVENT_DISPATCHER_SERVICE_NAME} \${EVENT_DISPATCHER_SERVICE_PORT}
+    \${NOTIFICATION_SERVICE_NAME} \${NOTIFICATION_SERVICE_PORT}'</span>&lt; /etc/nginx/conf.d/nginx.conf.template <span class="o">&gt;</span> /etc/nginx/nginx.conf
+
+<span class="c"># Start Nginx</span>
+<span class="nb">exec</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This script uses <code>envsubst</code> to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in our microservices architecture.</p>
+</div>
+<div class="paragraph">
+<p>Each Docker image is automatically built, tagged, and published to GitHub Container Registry through our CI/CD pipelines, ensuring that the latest version is always available for deployment.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2350,7 +2466,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-01 16:04:26 UTC
+Last updated 2025-03-01 16:32:44 UTC
 </div>
 </div>
 </body>
