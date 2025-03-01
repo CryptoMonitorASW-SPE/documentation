@@ -171,3 +171,106 @@ For TypeScript projects:
 
 === Containerization
 
+Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.
+
+In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.
+
+==== Docker Configuration
+
+We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:
+
+===== TypeScript Backend Dockerfile
+
+For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies:
+
+[source, dockerfile]
+----
+FROM node:22.13-alpine AS build
+WORKDIR /usr/src/app
+COPY app/package*.json ./
+RUN npm install
+COPY app/ ./
+RUN npm run build
+
+FROM node:22.13-alpine AS build-final
+RUN apk update && apk upgrade
+RUN apk --no-cache add curl
+WORKDIR /usr/src/app
+COPY app/package*.json ./
+RUN npm install --production
+COPY --from=build /usr/src/app/dist ./dist
+EXPOSE 3000
+CMD ["npm", "start"]
+----
+
+===== Kotlin Backend Dockerfile
+
+For Kotlin microservices, we leverage the Gradle build system and JVM optimization techniques:
+
+[source, dockerfile]
+----
+FROM gradle:8.12-jdk21 AS build
+
+COPY app/build.gradle.kts settings.gradle.kts gradle.properties ./
+RUN mkdir -p gradle
+COPY gradle/libs.versions.toml gradle/
+COPY app/src src
+
+RUN --mount=type=cache,target=/home/gradle/.gradle/caches gradle jar --no-daemon --parallel --build-cache
+
+FROM openjdk:21-jdk-slim
+
+RUN apt-get update && apt-get install -y curl
+
+WORKDIR /app
+
+COPY --from=build /home/gradle/build/libs/app.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+----
+
+===== Vue.js Frontend Dockerfile
+
+For our Vue.js frontend application, we use a multi-stage build that compiles the application and serves it via Nginx:
+
+[source, dockerfile]
+----
+FROM node:22.13-alpine AS build
+WORKDIR /app
+COPY app/package*.json ./
+RUN npm install
+COPY app/ .
+RUN npm run build
+
+FROM nginx:stable as prod-stage
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+EXPOSE 80
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf.template
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
+----
+
+The entrypoint.sh script is crucial for dynamically configuring Nginx with environment variables, allowing the frontend to communicate with various microservices:
+
+[source, shell]
+----
+#!/bin/sh
+
+envsubst '\
+    \${AUTHENTICATION_SERVICE_NAME} \${AUTHENTICATION_SERVICE_PORT} \
+    ${CRYPTOMARKET_SERVICE_NAME} \${CRYPTOMARKET_SERVICE_PORT}
+    \${USER_MANAGEMENT_SERVICE_NAME} \${USER_MANAGEMENT_SERVICE_PORT}
+    \${EVENT_DISPATCHER_SERVICE_NAME} \${EVENT_DISPATCHER_SERVICE_PORT}
+    \${NOTIFICATION_SERVICE_NAME} \${NOTIFICATION_SERVICE_PORT}'< /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/nginx.conf
+
+# Start Nginx
+exec "$@"
+----
+
+This script uses `envsubst` to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in our microservices architecture.
+
+Each Docker image is automatically built, tagged, and published to GitHub Container Registry through our CI/CD pipelines, ensuring that the latest version is always available for deployment.
