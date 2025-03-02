@@ -599,25 +599,26 @@ pre.rouge .gs {
 <li><a href="#_ubiquitous_language">2.1. Ubiquitous Language</a></li>
 <li><a href="#_requirements_analysis">2.2. Requirements Analysis</a></li>
 <li><a href="#_event_storming">2.3. Event Storming</a></li>
-<li><a href="#_context_map">2.4. Context Map</a></li>
-<li><a href="#_bounded_contexts">2.5. Bounded Contexts</a></li>
+<li><a href="#_bounded_contexts">2.4. Bounded Contexts</a></li>
+<li><a href="#_context_map">2.5. Context Map</a></li>
 </ul>
 </li>
-<li><a href="#_devops_scenario">3. DevOps Scenario</a>
+<li><a href="#_architecture_design">3. Architecture Design</a>
 <ul class="sectlevel2">
-<li><a href="#_licensing">3.1. Licensing</a></li>
-<li><a href="#_versioning">3.2. Versioning</a></li>
-<li><a href="#_branch_management">3.3. Branch Management</a></li>
-<li><a href="#_git_hooks">3.4. Git Hooks</a></li>
-<li><a href="#_build_automation">3.5. Build Automation</a></li>
-<li><a href="#_continuous_integration">3.6. Continuous Integration</a></li>
-<li><a href="#_containerization">3.7. Containerization</a></li>
+<li><a href="#_application_design">3.1. Application Design</a></li>
+<li><a href="#_interactions">3.2. Interactions</a></li>
+<li><a href="#_microservices_design">3.3. Microservices Design</a></li>
 </ul>
 </li>
-<li><a href="#_detailed_design">4. Detailed Design</a>
+<li><a href="#_devops_scenario">4. DevOps Scenario</a>
 <ul class="sectlevel2">
-<li><a href="#_application_design">4.1. Application Design</a></li>
-<li><a href="#_microservices_design">4.2. Microservices Design</a></li>
+<li><a href="#_licensing">4.1. Licensing</a></li>
+<li><a href="#_versioning">4.2. Versioning</a></li>
+<li><a href="#_branch_management">4.3. Branch Management</a></li>
+<li><a href="#_git_hooks">4.4. Git Hooks</a></li>
+<li><a href="#_build_automation">4.5. Build Automation</a></li>
+<li><a href="#_continuous_integration">4.6. Continuous Integration</a></li>
+<li><a href="#_containerization">4.7. Containerization</a></li>
 </ul>
 </li>
 <li><a href="#_deployment">5. Deployment</a></li>
@@ -1857,18 +1858,7 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect3">
-<h4 id="_step_2_sorting_and_grouping_domain_events">2.3.2. <em>Step 2: Sorting and Grouping Domain Events</em></h4>
-<div class="paragraph">
-<p>The domain events are grouped into categories to facilitate the understanding of the system&#8217;s behavior:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="resources/png/domain-events-sorted.png" alt="Grouped Domain Events">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_step_3_timeline">2.3.3. <em>Step 3: Timeline</em></h4>
+<h4 id="_step_2_timeline">2.3.2. <em>Step 2: Timeline</em></h4>
 <div class="paragraph">
 <p>The timeline is created to visualize the sequence of events and the flow of information in the system:</p>
 </div>
@@ -1879,7 +1869,7 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect3">
-<h4 id="_step_4_user_actions_external_systems_and_business_process">2.3.4. <em>Step 4: User Actions, External systems and Business Process</em></h4>
+<h4 id="_step_3_user_actions_external_systems_and_business_process">2.3.3. <em>Step 3: User Actions, External systems and Business Process</em></h4>
 <div class="paragraph">
 <p>The user actions (Commands, Actors, Read Model), external systems, and business processes are identified to understand the system&#8217;s interactions:</p>
 </div>
@@ -1889,28 +1879,1106 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_step_4_aggregates">2.3.4. <em>Step 4: Aggregates</em></h4>
+<div class="paragraph">
+<p>The aggregates are identified to group the domain events and commands that are related to the same entity:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/aggregates.png" alt="Aggregates">
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_context_map">2.4. Context Map</h3>
-
+<h3 id="_bounded_contexts">2.4. Bounded Contexts</h3>
+<div class="paragraph">
+<p>After the Event Storming session, the team identified the Bounded Contexts that will be part of the system.
+Each Bounded Context is a boundary within which a domain model is defined and applicable.
+For each of them, the team linked the relative ubiquitous language, commands and domain events.
+The Bounded Contexts identified are:</p>
+</div>
+<div class="sect3">
+<h4 id="_crypto_market_context">2.4.1. <em>Crypto Market Context</em></h4>
+<div class="paragraph">
+<p>It is the source for all cryptocurrency-related data.
+It manages information about cryptocurrencies, including their IDs, symbols, current prices, and historical price data.
+Additionally, it can handle currency conversions between different fiat and crypto currencies, ensuring that all other contexts
+rely on consistent and up-to-date market information.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A cryptocurrency.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Market</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of the most important cryptocurrencies.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Price Variation</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluctuation in a crypto’s value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>24h Volume</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total trading value of a cryptocurrency over the last 24 hours.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Market Cap</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total value of a cryptocurrency, calculated by multiplying its current price by the total circulating supply.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>FIAT Currency</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A traditional currency used to compare the market value of cryptocurrencies (EUR, USD).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Price Limits</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A threshold on the price of a crypto.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Details</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data related to a crypto (name, symbol, price, market cap, 24h volume, price variation).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Aggregate Root:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Crypto</em>: Represents a cryptocurrency with its details and forms an aggregate root with the value object <em>Price</em>.
+It has the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>cryptoID</code>: Unique identifier for the crypto.</p>
+</li>
+<li>
+<p><code>Name</code>: The name of the crypto.</p>
+</li>
+<li>
+<p><code>Symbol</code>: The symbol of the crypto.</p>
+</li>
+<li>
+<p><code>currentValue</code>: The current value of the crypto.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Value Objects:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Price</em>: Represents the price of a crypto. It has the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>value</code>: The value of the crypto.</p>
+</li>
+<li>
+<p><code>currency</code>: The currency in which the value is expressed.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Repositories:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>CryptoRepository</em>: Manages the persistence and retrieval of crypto data.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>MarketDataService</em>: Provides functionalities to fetch and update market data.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>selectCryptoCommand</em>: Select a crypto to see its details.</p>
+</li>
+<li>
+<p><em>filterCryptoCommand</em>: Filter the crypto market based on specific criteria.</p>
+</li>
+<li>
+<p><em>sortCryptoCommand</em>: Sort the crypto market based on specific criteria.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>MarketDataRefreshedEvent</em>: The crypto market data has been updated.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_watchlist_context">2.4.2. <em>Watchlist Context</em></h4>
+<div class="paragraph">
+<p>Enables users to manage a personalized list of favorite or tracked cryptocurrencies. Users can add or remove cryptos from their watchlist.
+This context allows users to monitor specific cryptocurrencies of interest without handling the complexity of market data.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>WatchList</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of cryptos that the logged user decided to observe.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A cryptocurrency.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Price Variation</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluctuation in a crypto’s value.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Entities:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>WatchlistItem</em>: Represent a single item in the watchlist. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>itemID</code>: The unique identifier for the item.</p>
+</li>
+<li>
+<p><code>cryptoID</code>: The unique identifier for the crypto.</p>
+</li>
+<li>
+<p><code>addedAt</code>: The date and time when the crypto was added to the watchlist.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Aggregate Root:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Watchlist</em>: Represents the user&#8217;s watchlist of cryptocurrencies. It is an aggregate root that contains a list of <em>Crypto</em>.
+It has the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>watchlistID</code>: The unique identifier for the watchlist.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>*Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>WatchlistService</em>: Provides functionalities to manage the watchlist, such as adding or removing cryptos.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>addCryptoToWatchlistCommand</em>: Add a crypto to the watchlist.</p>
+</li>
+<li>
+<p><em>removeCryptoFromWatchlistCommand</em>: Remove a crypto from the watchlist.</p>
+</li>
+<li>
+<p><em>setPriceLimitCommand</em>: Set a price limit for a crypto in the watchlist.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>CryptoAddedToWatchlistEvent</em>: A crypto has been added to the watchlist.</p>
+</li>
+<li>
+<p><em>CryptoRemovedFromWatchlistEvent</em>: A crypto has been removed from the watchlist.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_wallet_context">2.4.3. <em>Wallet Context</em></h4>
+<div class="paragraph">
+<p>Manages users' cryptocurrency portfolios by tracking their transactions (buying, selling), current holdings, and overall
+portfolio valuation. It provides functionalities to view historical performance and assess the value of assets in various currencies.
+This context ensures that users have a clear and accurate representation of their investment positions.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wallet</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of crypto assets that the logged user owns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Crypto Asset</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data (buying price/date, selling price/date, quantity) related to a crypto that the user owns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Transaction</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A movement of a crypto related to the wallet, which can be a purchase or a sale and is used to track the asset.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Performance</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The overall value trend of the wallet based on historical crypto prices, considering any purchase or sale operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Report</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An analysis of the wallet of a logged user during a timespan.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Interactive Chart</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A visual representation that allows users to analyze historical cryptocurrency or wallet data with interactive features such as zoom, time filters, and customizable views.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Entities:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Transaction</em>: Represents a transaction related to a crypto asset. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>transactionID</code>: The unique identifier for the transaction.</p>
+</li>
+<li>
+<p><code>cryptoID</code>: The unique identifier for the crypto.</p>
+</li>
+<li>
+<p><code>quantity</code>: The quantity of the crypto bought or sold.</p>
+</li>
+<li>
+<p><code>doneAt</code>: The date and time when the transaction was executed.</p>
+</li>
+<li>
+<p><code>priceAtPurchase</code>: The price of the crypto at the time of purchase.</p>
+</li>
+<li>
+<p><code>currency</code>: The currency used for the transaction (e.g., USD, EUR).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Aggregate Root:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Wallet</em>: Represents the user&#8217;s wallet of crypto assets. It is an aggregate root that contains a list of <em>Transaction</em>.
+It has the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>walletID</code>: The unique identifier for the wallet.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Value Objects:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Type</em>: Represents the type of transaction (buy or sell).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>WalletService</em>: Provides functionalities to manage the wallet, such as adding or removing transactions and generating reports.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>addTransactionCommand</em>: Add a transaction to the wallet.</p>
+</li>
+<li>
+<p><em>removeTransactionCommand</em>: Remove a transaction from the wallet.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>TransactionAddedEvent</em>: A transaction has been added to the wallet.</p>
+</li>
+<li>
+<p><em>TransactionRemovedEvent</em>: A transaction has been removed from the wallet.</p>
+</li>
+<li>
+<p><em>WalletReportUpdatedEvent</em>: The wallet performance report has been updated.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_authentication_context">2.4.4. <em>Authentication Context</em></h4>
+<div class="paragraph">
+<p>Handles all aspects of user authentication and authorization. This includes user registration, login, secure credential management, and logout.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A person that uses the Application</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A process where a not-logged user can become a logged user using their credentials</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A pair of email and password that identify an account</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not\-Logged User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A user who didn\’t register to the system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logged User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A user registered to the system that can access additional functionality\, like having a personal wallet and a watchlist</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Entities:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>User</em>: Represents a user of the system. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>userID</code>: The unique identifier for the user.</p>
+</li>
+<li>
+<p><code>email</code>: The email address of the user.</p>
+</li>
+<li>
+<p><code>hashedPassword</code>: The hashed password of the user.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>AuthenticationService</em>: Provides functionalities for user authentication, such as registration, login, and logout.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Repositories:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>AuthRepository</em>: Manages the persistence and retrieval of user data.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>signupUserCommand</em>: Register a new user.</p>
+</li>
+<li>
+<p><em>signinUserCommand</em>: Authenticate a user.</p>
+</li>
+<li>
+<p><em>logoutUserCommand</em>: Log out a user.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>UserRegisterEvent</em>: A new user has been registered.</p>
+</li>
+<li>
+<p><em>UserSignedInEvent</em>: A user has been authenticated.</p>
+</li>
+<li>
+<p><em>UserLoggedOutEvent</em>: A user has been logged out.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_user_context">2.4.5. <em>User Context</em></h4>
+<div class="paragraph">
+<p>Manages user data, including account information. It provides functionalities to view and edit user details, ensuring that users can manage their profiles effectively.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A person that uses the Application</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Account</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of data related to a user</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Entities:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>User</em>: Represents a user of the system. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ID</code>: The unique identifier for the user.</p>
+</li>
+<li>
+<p><code>email</code>: The email address of the user.</p>
+</li>
+<li>
+<p><code>walletID</code>: The unique identifier for the user&#8217;s wallet.</p>
+</li>
+<li>
+<p><code>watchlistID</code>: The unique identifier for the user&#8217;s watchlist.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Value Objects:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Profile</em>: Represents the user&#8217;s profile information. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Name</code>: The first name of the user.</p>
+</li>
+<li>
+<p><code>Surname</code>: The last name of the user.</p>
+</li>
+<li>
+<p><code>Date</code>: The date of birth of the user.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>UserManagementService</em>: Provides functionalities to manage user data, such as viewing and editing user details.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Factories:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>UserFactory</em>: Creates instances of the User entity.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Repositories:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>UserRepository</em>: Manages the persistence and retrieval of user data.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>viewAccountCommand</em>: View user account details.</p>
+</li>
+<li>
+<p><em>modifyAccountCommand</em>: Edit user account information.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>UserAccountModifiedEvent</em>: A user&#8217;s account information has been modified.</p>
+</li>
+<li>
+<p><em>UserInfoUpdatedEvent</em>: A user&#8217;s profile information has been updated.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notification_context">2.4.6. <em>Notification Context</em></h4>
+<div class="paragraph">
+<p>Manages and delivers user-defined alerts based on specific cryptocurrency events or conditions, such as price thresholds or percentage changes.
+It handles the creation, activation, and triggering of alerts, and sends notifications, like push notifications. This ensures users stay informed about
+important market movements relevant to their interests.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ubiquitous Language</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notification</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A message from the system sent to a logged user related to a crypto in their watchlist.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Price Limits</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A threshold on the price of a crypto \(used to trigger notifications\).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crypto</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A cryptocurrency \(used to specify which crypto the notification is about\).</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Aggregate Root:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>PriceAlert</em>: Represents a price alert set by a user for a specific crypto. It contains the following attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>alertID</code>: The unique identifier for the alert.</p>
+</li>
+<li>
+<p><code>userID</code>: The unique identifier for the user who set the alert.</p>
+</li>
+<li>
+<p><code>cryptoID</code>: The unique identifier for the crypto the alert is related to.</p>
+</li>
+<li>
+<p><code>alertPrice</code>: The price threshold that triggers the alert.</p>
+</li>
+<li>
+<p><code>isActive</code>: A flag indicating if the alert is active.</p>
+</li>
+<li>
+<p><code>message</code>: The message to be sent in the notification.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Value Objects:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>AlertType</em>: Represents the type of alert.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Services:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>NotificationServiceImpl</em>: Provides functionalities to manage notifications, such as enabling, disabling, and deleting alerts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Repositories:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>PriceAlertRepository</em>: Manages the persistence and retrieval of price alerts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Commands:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>enableNotificationCommand</em>: Enable a notification for a crypto.</p>
+</li>
+<li>
+<p><em>disableNotificationCommand</em>: Disable a notification for a crypto.</p>
+</li>
+<li>
+<p><em>deleteNotificationCommand</em>: Delete a notification for a crypto.</p>
+</li>
+<li>
+<p><em>setPriceLimitCommand</em>: Set a price limit for a crypto.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Domain Events:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>PriceAlertTriggeredEvent</em>: A price alert has been triggered for a crypto.</p>
+</li>
+<li>
+<p><em>NotificationEnabledEvent</em>: A notification has been enabled for a crypto.</p>
+</li>
+<li>
+<p><em>NotificationDisabledEvent</em>: A notification has been disabled for a crypto.</p>
+</li>
+<li>
+<p><em>NotificationDeletedEvent</em>: A notification has been deleted for a crypto.</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_bounded_contexts">2.5. Bounded Contexts</h3>
-
+<h3 id="_context_map">2.5. Context Map</h3>
+<div class="paragraph">
+<p>At the end, after the identification of the Bounded Contexts, the team produced the Context Map that shows the relationships between the contexts.
+Thanks to a careful analysis, the team decided to regroup the Watchlist, Wallet and User contexts under one Bounded Context called User Management Context.
+This because the three contexts are strictly related to the user and his data.
+Here is the Context Map:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/context_map.drawio.png" alt="Context Map">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Customer-Supplier relationship between Bounded Contexts:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crypto Market Context → Notification Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Notification Context (Customer) consumes data from the Crypto Market Context (Supplier).</p>
+</li>
+<li>
+<p>The Notification Context relies on price variations from the Crypto Market Context to trigger price alerts.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Crypto Market Context → User Management Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The User Management Context (Customer), specifically its Wallet and Watchlist subcontexts, depends on Crypto Market Context (Supplier) for market data.</p>
+</li>
+<li>
+<p>This data is necessary for tracking user investments (Wallet) and monitoring watched cryptocurrencies (Watchlist).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Authentication Context → User Management Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The User Management Context (Customer) relies on Authentication Context (Supplier) for user authentication and identity management.</p>
+</li>
+<li>
+<p>The User subcontext within User Management needs user credentials and authentication processes managed by Authentication Context.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>User Management Context → Notification Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Notification Context (Customer) depends on User Management Context (Supplier) for watchlist data.</p>
+</li>
+<li>
+<p>This allows Notification Context to trigger alerts based on user preferences and tracked assets.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Conformist releationship between Bounded Contexts:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crypto Market Context ↔ User Management Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The User Management Context (Downstream) is a Conformist because it must adapt to the Crypto Market Context (Upstream).</p>
+</li>
+<li>
+<p>User Management has no control over how Crypto Market structures its market data and must consume it as provided.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>User Management Context ↔ Notification Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Notification Context (Downstream) is a Conformist because it must accept the User Management Context (Upstream) data model without modifications.</p>
+</li>
+<li>
+<p>Notification Context cannot influence how User Management structures watchlist data.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Authentication Context ↔ User Management Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The User Management Context (Downstream) is a Conformist because it must integrate with Authentication Context (Upstream) without altering its authentication model.</p>
+</li>
+<li>
+<p>User Management must comply with Authentication Context’s predefined user structures and authentication mechanisms.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Crypto Market Context ↔ Notification Context</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Notification Context (Downstream) is a Conformist because it must consume price updates from Crypto Market Context (Upstream) without modifying how they are structured.</p>
+</li>
+<li>
+<p>Notification Context adapts to the market data format imposed by Crypto Market Context.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_devops_scenario">3. DevOps Scenario</h2>
+<h2 id="_architecture_design">3. Architecture Design</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After the analysis of the domain and the production of the bounded context, the next step that the team followed was the design of the architecture.</p>
+</div>
+<div class="sect2">
+<h3 id="_application_design">3.1. Application Design</h3>
+<div class="paragraph">
+<p>For the CryptoMonitor system, the team chose a microservices architecture. The microservices architecture is an architectural style that structures an application as a collection
+of services that are loosely coupled, highly maintainable, and independently deployable. Each service is responsible for a specific business capability and can be developed, deployed,
+and scaled independently.</p>
+</div>
+<div class="paragraph">
+<p>The system has been devided into the following microservices following the bounded context:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Vue-frontend microservice</strong>: This microservice is responsible for the user interface of the system. It is a Vue.js application that consumes the RESTful APIs provided by the backend microservices.</p>
+</li>
+<li>
+<p><strong>Authentication microservice</strong>: This microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token generation.</p>
+</li>
+<li>
+<p><strong>Crypto Market microservice</strong>: This microservice is responsible for fetching the latest cryptocurrency market data from the CoinGecko API and storing it in the database. It provides the necessary APIs for fetching the market data.</p>
+</li>
+<li>
+<p><strong>User Management microservice</strong>: This microservice is responsible for managing the user of the system including his account, watchlist e wallet. It provides the necessary APIs for user management like viewing and editing the account, adding and removing cryptos for the watchlist
+and adding and removing transactions for the wallet.</p>
+</li>
+<li>
+<p><strong>Notification microservice</strong>: This microservice is responsible for sending notifications to the users of the system based on the price alterts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.</p>
+</li>
+<li>
+<p><strong>Event-dispatcher microservice</strong>: This microservice has been added to the architecture to handle the communication between the microservices. More specifically, it is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <strong>Vue-frontend</strong> and the <strong>Event-dispatcher</strong> microservices doesn&#8217;t appier in the bounded context analysis. The first-one because is dedicated only to the frontend and the second-one because is a simple orchestrator between the frontend and the other microservices.
+However, the team decided to include them in the architecture as a microservices to have a more clear and complete view of the system and also to permit the scalability of the entire system.</p>
+</div>
+<div class="paragraph">
+<p>The architecture of the system is shown in the following diagram:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/png/architecture_diagram.drawio.png" alt="Architecture Design">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_interactions">3.2. Interactions</h3>
+<div class="paragraph">
+<p>Each microservice interacts with the others through RESTful APIs. The Vue-frontend microservices also use WebSockets(Socket.io) to communicate with the event-dispatcher microservice to receive real-time data.</p>
+</div>
+<div class="paragraph">
+<p>The team decided to not use an API Gateway in the architecture to avoid unecessary complecity and to keep the system as simple as possible.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_microservices_design">3.3. Microservices Design</h3>
+<div class="paragraph">
+<p>For each microservice, the team adopted an hexagonal architecture, except for the Vue-frontend microservice that is a Single-Page Application (SPA).
+The hexagonal architecture is an architectural style that separates the application into three main layers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Domain layer: This layer contains the business logic of the application. It is the core of the application and is independent of the other layers.</p>
+</li>
+<li>
+<p>Application layer: This layer contains the use cases of the application. It is responsible for coordinating the interactions between the domain layer and the infrastructure layer.</p>
+</li>
+<li>
+<p>Infrastructure layer: This layer contains the implementation details of the application. It is responsible for interacting with external systems such as databases, APIs, and messaging systems.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the following sections is provided a detailed description of all the microservices and their hexagonal architecture.</p>
+</div>
+<div class="sect3">
+<h4 id="_authentication">3.3.1. Authentication</h4>
+<div class="paragraph">
+<p>The Authentication microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token generation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/packagediagramauth.svg" alt="packagediagramauth" width="777" height="184">
+</div>
+<div class="title">Figure 4. Package Diagram - Authentication Microservice</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_crypto_market">3.3.2. Crypto Market</h4>
+<div class="paragraph">
+<p>The Crypto Market microservice is responsible for fetching the latest cryptocurrency market data from the CoinGecko API. It provides the necessary APIs for fetching the market data.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/packagediagramcryptomarket.svg" alt="packagediagramcryptomarket" width="421" height="184">
+</div>
+<div class="title">Figure 5. Package Diagram - Crypto Market Microservice</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_event_dispatcher">3.3.3. Event-dispatcher</h4>
+<div class="paragraph">
+<p>The Event-dispatcher microservice is responsible for handling the communication between the microservices. It is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/packagediagrameventdispatcher.svg" alt="packagediagrameventdispatcher" width="764" height="184">
+</div>
+<div class="title">Figure 6. Package Diagram - Event-dispatcher Microservice</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notification">3.3.4. Notification</h4>
+<div class="paragraph">
+<p>The Notification microservice is responsible for sending notifications to the users of the system based on the price alerts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/packagediagramnotification.svg" alt="packagediagramnotification" width="423" height="184">
+</div>
+<div class="title">Figure 7. Package Diagram - Notification Microservice</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_user_management">3.3.5. User Management</h4>
+<div class="paragraph">
+<p>The User Management microservice is responsible for managing the users of the system including their account, watchlist, and wallet. It provides the necessary APIs for user management like viewing and editing the account, adding and removing cryptos for the watchlist, and adding and removing transactions for the wallet.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="resources/svg/packagediagramusermanagement.svg" alt="packagediagramusermanagement" width="1178" height="251">
+</div>
+<div class="title">Figure 8. Package Diagram - User Management Microservice</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_devops_scenario">4. DevOps Scenario</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_licensing">3.1. Licensing</h3>
+<h3 id="_licensing">4.1. Licensing</h3>
 <div class="paragraph">
 <p>We have selected the <a href="https://opensource.org/licenses/MIT">MIT License</a> for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_versioning">3.2. Versioning</h3>
+<h3 id="_versioning">4.2. Versioning</h3>
 <div class="paragraph">
 <p>We have adopted the Semantic Versioning (SemVer) scheme for versioning our software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.</p>
 </div>
@@ -1922,12 +2990,12 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect2">
-<h3 id="_branch_management">3.3. Branch Management</h3>
+<h3 id="_branch_management">4.3. Branch Management</h3>
 <div class="paragraph">
 <p>We implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.</p>
 </div>
 <div class="sect3">
-<h4 id="_branch_organization">3.3.1. Branch Organization</h4>
+<h4 id="_branch_organization">4.3.1. Branch Organization</h4>
 <div class="paragraph">
 <p>Our system used two primary branches:</p>
 </div>
@@ -1942,7 +3010,7 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect3">
-<h4 id="_merge_strategy">3.3.2. Merge Strategy</h4>
+<h4 id="_merge_strategy">4.3.2. Merge Strategy</h4>
 <div class="paragraph">
 <p>All merges to the develop branch followed a strict protocol:</p>
 </div>
@@ -1967,7 +3035,7 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect3">
-<h4 id="_protection_rules">3.3.3. Protection Rules</h4>
+<h4 id="_protection_rules">4.3.3. Protection Rules</h4>
 <div class="paragraph">
 <p>Through branch rulesets, we enforced several key protections for the primary branches:</p>
 </div>
@@ -1993,7 +3061,7 @@ The steps followed during the Event Storming session are described as follows, u
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_hooks">3.4. Git Hooks</h3>
+<h3 id="_git_hooks">4.4. Git Hooks</h3>
 <div class="paragraph">
 <p>We have configured Git hooks using <a href="https://github.com/typicode/husky">Husky</a> to automate and enforce certain checks before commits and pushes. Husky allows us to easily manage Git hooks and ensure that our codebase maintains high standards.</p>
 </div>
@@ -2054,11 +3122,11 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_automation">3.5. Build Automation</h3>
+<h3 id="_build_automation">4.5. Build Automation</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_continuous_integration">3.6. Continuous Integration</h3>
+<h3 id="_continuous_integration">4.6. Continuous Integration</h3>
 <div class="paragraph">
 <p>At the purpose of making the project more reliable and maintainable, we have implemented various actions with GitHub Actions. The main actions are:</p>
 </div>
@@ -2079,7 +3147,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_release">3.6.1. Release</h4>
+<h4 id="_release">4.6.1. Release</h4>
 <div class="paragraph">
 <p>This workflow automates the release process and is triggered by pushes to the main branch. It consists of a single job that:</p>
 </div>
@@ -2123,7 +3191,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect3">
-<h4 id="_release_workflow">3.6.2. Release Workflow</h4>
+<h4 id="_release_workflow">4.6.2. Release Workflow</h4>
 <div class="paragraph">
 <p>This workflow is triggered by a published release. It consists of three main jobs:</p>
 </div>
@@ -2190,7 +3258,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete_branch_on_rebase">3.6.3. Delete Branch on Rebase</h4>
+<h4 id="_delete_branch_on_rebase">4.6.3. Delete Branch on Rebase</h4>
 <div class="paragraph">
 <p>This workflow automatically removes branches after they have been successfully merged via pull requests. It doesn&#8217;t delete protected branches like Main or Develop due to branch rulesets. The workflow:</p>
 </div>
@@ -2215,7 +3283,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pr_test_pipeline">3.6.4. PR Test Pipeline</h4>
+<h4 id="_pr_test_pipeline">4.6.4. PR Test Pipeline</h4>
 <div class="paragraph">
 <p>This workflow runs automated checks on every pull request (creation, update, or reopening).  Due to branch protection rules, both jobs must complete successfully before the pull request can be merged.</p>
 </div>
@@ -2306,7 +3374,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect2">
-<h3 id="_containerization">3.7. Containerization</h3>
+<h3 id="_containerization">4.7. Containerization</h3>
 <div class="paragraph">
 <p>Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.</p>
 </div>
@@ -2314,7 +3382,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 <p>In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
 </div>
 <div class="sect3">
-<h4 id="_docker_configuration">3.7.1. Docker Configuration</h4>
+<h4 id="_docker_configuration">4.7.1. Docker Configuration</h4>
 <div class="paragraph">
 <p>We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:</p>
 </div>
@@ -2428,26 +3496,6 @@ envsubst <span class="s1">'\
 </div>
 </div>
 <div class="sect1">
-<h2 id="_detailed_design">4. Detailed Design</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_application_design">4.1. Application Design</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_microservices_design">4.2. Microservices Design</h3>
-<div class="sect3">
-<h4 id="_authentication">4.2.1. Authentication</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_crypto_market">4.2.2. Crypto Market</h4>
-
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_deployment">5. Deployment</h2>
 <div class="sectionbody">
 
@@ -2466,7 +3514,7 @@ envsubst <span class="s1">'\
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-01 16:32:44 UTC
+Last updated 2025-03-02 19:29:22 UTC
 </div>
 </div>
 </body>
