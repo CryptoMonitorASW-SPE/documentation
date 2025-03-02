@@ -1,0 +1,23 @@
+@startuml
+package src {
+    package application {}
+
+    package domain {
+        package model {
+        package user{}
+        package wallet{}
+        package watchlist{}
+        }
+        package ports {}
+        package factories {}
+    }
+
+    package infrastructure {
+        package adapters {}
+        package database {
+        package schema{}
+        }
+        package middleware {}
+    }
+}
+@enduml

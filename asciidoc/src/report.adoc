@@ -18,6 +18,8 @@ include::chapters/Introduction.adoc[]
 
 include::chapters/DomainDrivenDesign.adoc[]
 
+include::chapters/Architecture.adoc[]
+
 include::chapters/DevOps.adoc[]
 
 include::chapters/DetailedDesign.adoc[]

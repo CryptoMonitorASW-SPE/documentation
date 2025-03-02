@@ -1,0 +1,18 @@
+@startuml
+package src {
+    package application {
+        package DTO {}
+        package handlers {}
+    }
+
+    package domain {
+        package model {}
+        package ports {}
+        package services {}
+    }
+
+    package infrastructure {
+        package adapters {}
+    }
+}
+@enduml
