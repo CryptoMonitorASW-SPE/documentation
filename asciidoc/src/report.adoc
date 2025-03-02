@@ -22,8 +22,6 @@ include::chapters/Architecture.adoc[]
 
 include::chapters/DevOps.adoc[]
 
-include::chapters/DetailedDesign.adoc[]
-
 include::chapters/Deployment.adoc[]
 
 include::chapters/conclusion.adoc[]
