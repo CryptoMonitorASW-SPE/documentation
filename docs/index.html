@@ -618,7 +618,8 @@ pre.rouge .gs {
 <li><a href="#_git_hooks">4.4. Git Hooks</a></li>
 <li><a href="#_build_automation">4.5. Build Automation</a></li>
 <li><a href="#_continuous_integration">4.6. Continuous Integration</a></li>
-<li><a href="#_containerization">4.7. Containerization</a></li>
+<li><a href="#_shell_scripts">4.7. Shell Scripts</a></li>
+<li><a href="#_containerization">4.8. Containerization</a></li>
 </ul>
 </li>
 <li><a href="#_deployment">5. Deployment</a>
@@ -3198,7 +3199,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </ul>
 </div>
 <div class="paragraph">
-<p>The release is done and signed by the CryptoMonitorCI-Bot user.</p>
+<p>The release is done and signed by the CryptoMonitorCI-Bot.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3385,7 +3386,40 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 </div>
 <div class="sect2">
-<h3 id="_containerization">4.7. Containerization</h3>
+<h3 id="_shell_scripts">4.7. Shell Scripts</h3>
+<div class="paragraph">
+<p>We developed various shell scripts to automatize and help our work to develop this microservice application.
+The scripts are:</p>
+</div>
+<div class="sect3">
+<h4 id="_docker_service_management_scripts">4.7.1. Docker Service Management Scripts</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Service Rebuild Script</strong>: Rebuilds all microservices except MongoDB and safely restarts MongoDB without stopping it. This preserves database state during development while allowing updates to other services.</p>
+</li>
+<li>
+<p><strong>Service Stop Script</strong>: A simple utility that stops all running Docker services in our environment using the docker-compose configuration.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_repository_management_scripts">4.7.2. Repository Management Scripts</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Multi-Repository Update Script</strong>: Automates the maintenance of our multiple Git repositories by checking out the develop branch in each project directory and pulling the latest changes. The script provides error handling and reports the success or failure of each repository update operation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These scripts significantly improved our development workflow by automating repetitive tasks, ensuring consistent development environments, and simplifying the management of our microservice architecture.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_containerization">4.8. Containerization</h3>
 <div class="paragraph">
 <p>Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.</p>
 </div>
@@ -3393,33 +3427,48 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 <p>In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
 </div>
 <div class="sect3">
-<h4 id="_docker_configuration">4.7.1. Docker Configuration</h4>
+<h4 id="_docker_configuration">4.8.1. Docker Configuration</h4>
 <div class="paragraph">
 <p>We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:</p>
 </div>
 <div class="sect4">
 <h5 id="_typescript_backend_dockerfile">TypeScript Backend Dockerfile</h5>
 <div class="paragraph">
-<p>For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies:</p>
+<p>For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies.</p>
+</div>
+<div class="paragraph">
+<p>We leverage build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
+across environments:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="dockerfile"><span class="k">FROM</span><span class="w"> </span><span class="s">node:22.13-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build</span>
+<pre class="rouge highlight"><code data-lang="dockerfile"><span class="k">FROM</span><span class="w"> </span><span class="s">gradle:8.12.1-jdk-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build</span>
 <span class="k">WORKDIR</span><span class="s"> /usr/src/app</span>
-<span class="k">COPY</span><span class="s"> app/package*.json ./</span>
-<span class="k">RUN </span>npm <span class="nb">install</span>
-<span class="k">COPY</span><span class="s"> app/ ./</span>
-<span class="k">RUN </span>npm run build
 
-<span class="k">FROM</span><span class="w"> </span><span class="s">node:22.13-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">build-final</span>
-<span class="k">RUN </span>apk update <span class="o">&amp;&amp;</span> apk upgrade
-<span class="k">RUN </span>apk <span class="nt">--no-cache</span> add curl
-<span class="k">WORKDIR</span><span class="s"> /usr/src/app</span>
-<span class="k">COPY</span><span class="s"> app/package*.json ./</span>
-<span class="k">RUN </span>npm <span class="nb">install</span> <span class="nt">--production</span>
-<span class="k">COPY</span><span class="s"> --from=build /usr/src/app/dist ./dist</span>
+<span class="k">RUN </span>apk add <span class="nt">--update</span> <span class="nt">--no-cache</span> curl nodejs npm
+
+<span class="k">RUN </span>java <span class="nt">-version</span> <span class="o">&amp;&amp;</span> gradle <span class="nt">--version</span> <span class="o">&amp;&amp;</span> node <span class="nt">-v</span> <span class="o">&amp;&amp;</span> npm <span class="nt">-v</span>
+
+<span class="k">COPY</span><span class="s"> app/build.gradle.kts settings.gradle.kts ./app/</span>
+<span class="k">COPY</span><span class="s"> gradle ./app/gradle</span>
+<span class="k">COPY</span><span class="s"> ./gradlew ./gradlew.bat ./app/</span>
+
+<span class="k">COPY</span><span class="s"> . .</span>
+
+<span class="k">RUN </span>gradle build
+<span class="k">RUN </span>gradle installProdDependencies
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">node:22-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">runtime</span>
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">RUN </span>apk add <span class="nt">--update</span> <span class="nt">--no-cache</span> curl
+
+<span class="k">COPY</span><span class="s"> --from=build /usr/src/app/app/node_modules ./node_modules</span>
+<span class="k">COPY</span><span class="s"> --from=build /usr/src/app/app/dist ./dist</span>
+<span class="k">COPY</span><span class="s"> --from=build /usr/src/app/app/package.json ./</span>
+
 <span class="k">EXPOSE</span><span class="s"> 3000</span>
-<span class="k">CMD</span><span class="s"> ["npm", "start"]</span></code></pre>
+
+<span class="k">CMD</span><span class="s"> ["npm", "run", "start"]</span></code></pre>
 </div>
 </div>
 </div>
@@ -3775,7 +3824,7 @@ envsubst <span class="s1">'\
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-02 21:27:58 UTC
+Last updated 2025-03-02 21:28:45 UTC
 </div>
 </div>
 </body>
