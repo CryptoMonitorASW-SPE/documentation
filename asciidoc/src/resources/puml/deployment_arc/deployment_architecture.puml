@@ -1,0 +1,60 @@
+@startuml Deployment Startup Sequence
+
+skinparam BackgroundColor white
+skinparam ArrowColor #333333
+skinparam ComponentStyle uml2
+skinparam ComponentBorderColor #666666
+skinparam ComponentBackgroundColor #EEEEEE
+skinparam DatabaseBackgroundColor #DDDDDD
+skinparam NodeBackgroundColor #FFFFFF
+skinparam Padding 5
+
+' Custom styling
+skinparam ArrowThickness 2
+skinparam TitleFontSize 20
+
+title "Microservices Startup Sequence Based on Health Checks"
+
+' Define the components
+database "MongoDB\nPort: 27017" as MongoDB #D5E8D4
+component "Authentication Service\nPort: 3002:3000" as Auth #DAE8FC
+component "User Management Service\nPort: 3003:3000" as UserMgmt #DAE8FC
+component "Crypto Market Service\nPort: 3000:3000" as CryptoMarket #DAE8FC
+component "Notification Service\nPort: 3004:3000" as Notification #DAE8FC
+component "Event Dispatcher Service\nPort: 3001:3000" as EventDispatcher #FFE6CC
+component "Frontend\n(Vue.js)\nPort: 8080:80" as Frontend #FFF2CC
+
+' Define vertical positioning
+MongoDB -[hidden]> Auth
+MongoDB -[hidden]> UserMgmt
+MongoDB -[hidden]> CryptoMarket
+MongoDB -[hidden]> Notification
+Auth -[hidden]> EventDispatcher
+UserMgmt -[hidden]> EventDispatcher
+CryptoMarket -[hidden]> EventDispatcher
+Notification -[hidden]> EventDispatcher
+EventDispatcher -[hidden]> Frontend
+
+' Draw the startup dependency timeline
+Auth -up-> MongoDB : "1. Waits for\nhealth check"
+UserMgmt -up-> MongoDB : "1. Waits for\nhealth check"
+CryptoMarket -up-> MongoDB : "1. Waits for\nhealth check"
+Notification -up-> MongoDB : "1. Waits for\nhealth check"
+
+EventDispatcher -up-> Auth : "2. Waits for\nhealth check"
+EventDispatcher -up-> UserMgmt : "2. Waits for\nhealth check"
+EventDispatcher -up-> CryptoMarket : "2. Waits for\nhealth check"
+EventDispatcher -up-> Notification : "2. Waits for\nhealth check"
+
+Frontend -up-> EventDispatcher : "3. Waits for\nhealth check"
+
+
+legend
+  |= Color |= Component Type |
+  |<#D5E8D4>| Database (First to start) |
+  |<#DAE8FC>| Independent Services (Second level) |
+  |<#FFE6CC>| Coordinating Services (Third level) |
+  |<#FFF2CC>| Frontend (Last to start) |
+endlegend
+
+@enduml

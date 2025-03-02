@@ -1,2 +1,166 @@
 == Deployment
 
+=== Overview
+
+We've implemented a Docker-based deployment approach that allows for both local development and production scenarios.
+
+=== Deployment Architecture
+
+Our deployment architecture follows a containerized microservices pattern, where each component runs in its own Docker container. The application consists of the following services:
+
+* *Frontend*: Vue.js web interface exposed to users
+* *Authentication*: Handles user authentication and token generation
+* *User Management*: Manages user profiles and preferences
+* *Crypto Market*: Retrieves and processes cryptocurrency market data
+* *Notification*: Manages and sends notifications to users
+* *Event Dispatcher*: Coordinates events between different services
+* *MongoDB*: Database server storing application data
+
+[plantuml, {diagramsdir}/deployment_arc, svg, title="Deployment Architecture graph"]
+----
+!include resources/puml/deployment_arc/deplyment_architecture.puml
+----
+
+=== Docker Compose Configuration
+
+We maintain two separate Docker Compose configurations for different deployment scenarios:
+
+==== Local Development Configuration
+
+The local development configuration (`docker-composelocale.yml` link:https://github.com/CryptoMonitorASW-SPE/bootstrap/blob/main/docker-composelocale.yml[GitHub]) builds services directly from source code in local directories. This approach is designed for development purposes, allowing developers to test changes made to individual services without rebuilding images.
+
+[source,yaml]
+----
+# Example from local configuration
+services:
+  frontend:
+    build:
+      context: ./src/vue-frontend
+      dockerfile: Dockerfile
+    # Configuration continues...
+----
+
+==== Production Deployment Configuration
+
+The production configuration (`docker-compose.yml` link:https://github.com/CryptoMonitorASW-SPE/bootstrap/blob/main/docker-compose.yml[GitHub]) uses pre-built images from our GitHub Container Registry. This approach ensures consistent, tested deployments across environments.
+
+[source,yaml]
+----
+# Example from production configuration
+services:
+  frontend:
+    image: ghcr.io/cryptomonitorasw-spe/vue-frontend:latest
+    # Configuration continues...
+----
+
+=== Network Architecture
+
+Our deployment utilizes two distinct Docker networks:
+
+* *Internal network* (`interna`): A bridge network with internal access only, used for service-to-service communication that should not be directly accessible from outside the Docker environment. This provides an additional layer of security by isolating internal services.
+
+* *External network* (`esterna`): A bridge network that allows external access to services that need to be publicly available.
+
+[source,yaml]
+----
+networks:
+  interna:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: "br-interna89012"
+      com.docker.network.enable_ipv6: "false"
+  esterna:
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.name: "br-esterna89012"
+      com.docker.network.enable_ipv6: "false"
+----
+
+=== Service Dependencies and Health Checks
+
+Our deployment implements dependency management to ensure services start in the correct order. For example, the frontend depends on the event-dispatcher, which depends on other services.
+
+Each service includes health checks that verify its operational status before dependent services are started:
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+  interval: 5s
+  timeout: 5s
+  retries: 3
+  start_period: 5s
+----
+
+This approach prevents cascading failures where dependent services start before their prerequisites are fully operational.
+
+=== Environment Variables and Configuration
+
+We use Docker Compose's anchors and extensions feature to define reusable configuration blocks, making our configuration DRY and easier to maintain:
+
+[source,yaml]
+----
+# Base service definitions with anchors for individual services
+x-service-defs:
+  authentication-name: &auth-name authentication
+  authentication-port: &auth-port 3000
+  # More definitions...
+
+# Service-specific environment variables
+x-auth-env: &auth-env
+  NAME: *auth-name
+  PORT: *auth-port
+  USER_MANAGEMENT_SERVICE_NAME: *user-name
+  USER_MANAGEMENT_SERVICE_PORT: *user-port
+  MONGODB_HOST: *mongodb-name
+  MONGODB_PORT: *mongodb-port
+----
+
+These environment variables are then injected into each service:
+
+[source,yaml]
+----
+services:
+  authentication:
+    # Other configuration...
+    environment:
+      <<: *auth-env
+      JWT_SIMMETRIC_KEY: ${JWT_SIMMETRIC_KEY}
+----
+
+Sensitive configuration values like `JWT_SIMMETRIC_KEY` and `COINGECKO_API_KEY` are provided through environment variables loaded from a `.env` file, which is not committed to version control for security reasons.
+
+=== Deployment Workflow
+
+==== Local Development Deployment
+
+For local development, the process is:
+
+1. Clone the bootstrap repository
+2. Create a `src` directory within the cloned repository
+3. Clone each service repository (frontend, authentication, user-management, etc.) into the src directory
+4. Create a `.env` file with required secrets
+5. Run `docker-compose -f docker-composelocale.yml up --build`
+
+This builds all services from local source code, allowing developers to test changes immediately.
+
+==== Production Deployment
+
+For production, the workflow is:
+
+1. Changes are pushed to the main branch
+2. CI/CD pipeline builds and tests the code
+3. Docker images are built and pushed to GitHub Container Registry
+4. On the production server:
+   * Clone/pull the repository
+   * Create/update the `.env` file
+   * Run `docker-compose up -d`
+
+This pulls the pre-built images from the registry and deploys them according to the production configuration.
+
+
+=== Monitoring
+
+Each service exposes a `/health` endpoint that can be used for monitoring. In a production environment, these endpoints can be integrated with monitoring tools to provide alerts and visualization of system health.
