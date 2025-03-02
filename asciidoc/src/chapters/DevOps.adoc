@@ -78,8 +78,6 @@ npx --no-install commitlint --edit $1
 npx lint-staged
 ----
 
-
-
 Templates
 
 === Build Automation
@@ -108,7 +106,7 @@ If semantic-release determines a release is needed, it automatically:
 * Creates a GitHub release
 * Tags the repository
 
-The release is done and signed by the CryptoMonitorCI-Bot user.
+The release is done and signed by the CryptoMonitorCI-Bot.
 
 ==== Release Workflow
 This workflow is triggered by a published release. It consists of three main jobs:
@@ -169,6 +167,23 @@ For TypeScript projects:
 ** Posts analysis results as PR comments
 ** Maintains persistent feedback through sticky comments
 
+=== Shell Scripts
+We developed various shell scripts to automatize and help our work to develop this microservice application.
+The scripts are:
+
+==== Docker Service Management Scripts
+
+* *Service Rebuild Script*: Rebuilds all microservices except MongoDB and safely restarts MongoDB without stopping it. This preserves database state during development while allowing updates to other services.
+
+* *Service Stop Script*: A simple utility that stops all running Docker services in our environment using the docker-compose configuration.
+
+==== Repository Management Scripts
+
+* *Multi-Repository Update Script*: Automates the maintenance of our multiple Git repositories by checking out the develop branch in each project directory and pulling the latest changes. The script provides error handling and reports the success or failure of each repository update operation.
+
+These scripts significantly improved our development workflow by automating repetitive tasks, ensuring consistent development environments, and simplifying the management of our microservice architecture.
+
+
 === Containerization
 
 Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.
@@ -181,26 +196,39 @@ We maintain separate Dockerfile configurations for our TypeScript and Kotlin bac
 
 ===== TypeScript Backend Dockerfile
 
-For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies:
+For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies. 
 
+We leverage build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
+across environments:
 [source, dockerfile]
 ----
-FROM node:22.13-alpine AS build
+FROM gradle:8.12.1-jdk-alpine AS build
 WORKDIR /usr/src/app
-COPY app/package*.json ./
-RUN npm install
-COPY app/ ./
-RUN npm run build
 
-FROM node:22.13-alpine AS build-final
-RUN apk update && apk upgrade
-RUN apk --no-cache add curl
-WORKDIR /usr/src/app
-COPY app/package*.json ./
-RUN npm install --production
-COPY --from=build /usr/src/app/dist ./dist
+RUN apk add --update --no-cache curl nodejs npm
+
+RUN java -version && gradle --version && node -v && npm -v
+
+COPY app/build.gradle.kts settings.gradle.kts ./app/
+COPY gradle ./app/gradle
+COPY ./gradlew ./gradlew.bat ./app/
+
+COPY . .
+
+RUN gradle build
+RUN gradle installProdDependencies
+
+FROM node:22-alpine AS runtime
+WORKDIR /app
+RUN apk add --update --no-cache curl
+
+COPY --from=build /usr/src/app/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/app/dist ./dist
+COPY --from=build /usr/src/app/app/package.json ./
+
 EXPOSE 3000
-CMD ["npm", "start"]
+
+CMD ["npm", "run", "start"]
 ----
 
 ===== Kotlin Backend Dockerfile
