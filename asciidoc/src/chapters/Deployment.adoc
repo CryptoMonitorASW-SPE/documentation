@@ -18,7 +18,7 @@ Our deployment architecture follows a containerized microservices pattern, where
 
 [plantuml, {diagramsdir}/deployment_arc, svg, title="Deployment Architecture graph"]
 ----
-!include resources/puml/deployment_arc/deplyment_architecture.puml
+!include resources/puml/deployment_arc/deployment_architecture.puml
 ----
 
 === Docker Compose Configuration
