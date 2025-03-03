@@ -361,7 +361,7 @@ To enforce the analysis, the requirements are also linked to the use cases and u
 * *US7: Watch a Crypto*
 
     As a user (both logged and not logged),
-    I want to access the crypto details,,
+    I want to access the crypto details,
     So that I can monitor the specific crypto.
 
 [cols="1,1"]
