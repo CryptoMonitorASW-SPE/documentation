@@ -2,11 +2,11 @@
 
 === Overview
 
-We've implemented a Docker-based deployment approach that allows for both local development and production scenarios.
+The team implemented a Docker-based deployment approach that allows for both local development and production scenarios.
 
 === Deployment Architecture
 
-Our deployment architecture follows a containerized microservices pattern, where each component runs in its own Docker container. The application consists of the following services:
+The deployment of the architecture follows a containerized microservices pattern, where each component runs in its own Docker container. The application consists of the following services:
 
 * *Frontend*: Vue.js web interface exposed to users
 * *Authentication*: Handles user authentication and token generation
@@ -23,7 +23,7 @@ Our deployment architecture follows a containerized microservices pattern, where
 
 === Docker Compose Configuration
 
-We maintain two separate Docker Compose configurations for different deployment scenarios:
+The team decided to maintain two separate Docker Compose configurations for different deployment scenarios:
 
 ==== Local Development Configuration
 
@@ -55,7 +55,7 @@ services:
 
 === Network Architecture
 
-Our deployment utilizes two distinct Docker networks:
+The deployment utilizes two distinct Docker networks:
 
 * *Internal network* (`interna`): A bridge network with internal access only, used for service-to-service communication that should not be directly accessible from outside the Docker environment. This provides an additional layer of security by isolating internal services.
 
@@ -80,7 +80,7 @@ networks:
 
 === Service Dependencies and Health Checks
 
-Our deployment implements dependency management to ensure services start in the correct order. For example, the frontend depends on the event-dispatcher, which depends on other services.
+The deployment implements dependency management to ensure services start in the correct order. For example, the frontend depends on the event-dispatcher, which depends on other services.
 
 Each service includes health checks that verify its operational status before dependent services are started:
 
@@ -98,7 +98,7 @@ This approach prevents cascading failures where dependent services start before 
 
 === Environment Variables and Configuration
 
-We use Docker Compose's anchors and extensions feature to define reusable configuration blocks, making our configuration DRY and easier to maintain:
+It has been used the Docker Compose's anchors and extensions feature to define reusable configuration blocks, making the configuration of the project DRY and easier to maintain:
 
 [source,yaml]
 ----
