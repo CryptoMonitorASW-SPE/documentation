@@ -357,7 +357,8 @@ This workflow is triggered by a published release. It consists of three main job
 ** Verifies the pushed image
 
 * Build documentation:
-** Generates Dokka HTML documentation
+** Generates Dokka HTML documentation for Kotlin projects
+** Generates TypeDoc documentation for TypeScript projects
 ** Packages documentation files
 ** Uploads as workflow artifact
 
@@ -540,3 +541,14 @@ exec "$@"
 This script uses `envsubst` to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in the realized microservices architecture.
 
 Each Docker image is automatically built, tagged, and published to GitHub Container Registry through our CI/CD pipelines, ensuring that the latest version is always available for deployment.
+
+=== Documentation
+
+To make the development process more efficient and maintainable, the team has implemented a comprehensive documentation strategy. The documentation is built using AsciiDoc, a lightweight markup language that allows for easy content creation and formatting.
+In the link:https://github.com/CryptoMonitorASW-SPE/documentation[Documentation Repository], the team has implemented a GitHub Actions workflow to build and deploy the documentation automatically. The workflow is triggered on pushes to the main branch and can also be manually triggered. It consists of two jobs: build and deploy.
+
+The build job checks out the repository, installs necessary packages, sets up Ruby, installs Ruby gems, builds the documentation, and uploads the generated documentation as an artifact.
+
+The deploy job checks out the repository, switches to the gh-pages branch, downloads the documentation artifact, imports the GPG key, and commits and pushes the updated documentation to the gh-pages branch.
+
+The page is then built by GitHub Pages and made available at the link:https://cryptomonitorasw-spe.github.io/documentation/[CryptoMonitor Documentation] URL.
