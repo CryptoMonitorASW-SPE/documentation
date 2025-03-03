@@ -2920,7 +2920,8 @@ The hexagonal architecture is an architectural style that separates the applicat
 <div class="sect3">
 <h4 id="_authentication">3.3.1. Authentication</h4>
 <div class="paragraph">
-<p>The Authentication microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token generation.</p>
+<p>The Authentication microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token handling.
+The project structure is shown in the following diagram:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2928,11 +2929,25 @@ The hexagonal architecture is an architectural style that separates the applicat
 </div>
 <div class="title">Figure 4. Package Diagram - Authentication Microservice</div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic of the Authentication microservice is contained in the domain layer, composed by the models prevously identified and the ports.</p>
+</li>
+<li>
+<p>The application layer contains the use cases of the microservice, like the registration and login use cases and orchestrates the interactions between the domain layer and the infrastructure layer.</p>
+</li>
+<li>
+<p>The infrastructure layer is responsible for the interaction with the database and the JWT token generation. In this layer there are the APIs exposed to the other microservices.</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_crypto_market">3.3.2. Crypto Market</h4>
 <div class="paragraph">
-<p>The Crypto Market microservice is responsible for fetching the latest cryptocurrency market data from the CoinGecko API. It provides the necessary APIs for fetching the market data.</p>
+<p>The Crypto Market microservice is responsible for fetching the latest cryptocurrency market data from the CoinGecko API. It provides the necessary APIs for fetching the market data.
+The project structure is shown in the following diagram:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2940,11 +2955,26 @@ The hexagonal architecture is an architectural style that separates the applicat
 </div>
 <div class="title">Figure 5. Package Diagram - Crypto Market Microservice</div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic of the Cryptomarket microservice is contained in the domain layer. This layer is composed of market entity models previously identified and ports.</p>
+</li>
+<li>
+<p>The application layer implements business rules like retrieving market data and managing fetch processes. Orchestrates interactions between the domain and infrastructure layers.</p>
+</li>
+<li>
+<p>The infrastructure layer is responsible for interacting with external systems, such as the CoinGecko API for data retrieval and event handling. Contains adapters for external communication.
+Components include CryptoRepositoryImpl (for HTTP communication), EventDispatcherAdapter (for event publishing), and a WebServer (for exposing RESTful endpoints).</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_event_dispatcher">3.3.3. Event-dispatcher</h4>
 <div class="paragraph">
-<p>The Event-dispatcher microservice is responsible for handling the communication between the microservices. It is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.</p>
+<p>The Event-dispatcher microservice is responsible for handling the communication between the microservices. It is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.
+The project structure is shown in the following diagram:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2952,17 +2982,44 @@ The hexagonal architecture is an architectural style that separates the applicat
 </div>
 <div class="title">Figure 6. Package Diagram - Event-dispatcher Microservice</div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic of the Event-dispatcher microservice is contained in the domain layer. This layer is composed of ports and several models that represent the events that are dispatched between the microservices.</p>
+</li>
+<li>
+<p>The application layer implements business rules like processing events and validating data. Orchestrates interactions between the domain and infrastructure layers.</p>
+</li>
+<li>
+<p>The infrastructure layer is responsible for interacting with external systems, including adapters for WebSockets, event-handling and JWT token validation. Exposes his APIs in the EventAdapter.</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_notification">3.3.4. Notification</h4>
 <div class="paragraph">
-<p>The Notification microservice is responsible for sending notifications to the users of the system based on the price alerts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.</p>
+<p>The Notification microservice is responsible for sending notifications to the users of the system based on the price alerts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.
+The project structure is shown in the following diagram:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="resources/svg/packagediagramnotification.svg" alt="packagediagramnotification" width="423" height="184">
 </div>
 <div class="title">Figure 7. Package Diagram - Notification Microservice</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic of the Notification microservice is contained in the domain layer. This layer is composed of notification entity models previously identified and ports.</p>
+</li>
+<li>
+<p>The application layer implements business rules like sending notifications and managing alerts. Orchestrates interactions between the domain and infrastructure layers.</p>
+</li>
+<li>
+<p>The infrastructure layer is responsible for interacting with external systems, including an adapters for DB and event-dispatcher and for validate the JWT token given that the notifications interest only the logged user. Exposes his APIs with a WebServer.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -2976,6 +3033,19 @@ The hexagonal architecture is an architectural style that separates the applicat
 </div>
 <div class="title">Figure 8. Package Diagram - User Management Microservice</div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The business logic of the User Management microservice is contained in the domain layer. This layer is composed of user entity models previously identified, ports and a factory responsible for creating new User entities along with their associated Wallet and Watchlist.</p>
+</li>
+<li>
+<p>The application layer implements business rules like managing user accounts, watchlists, and wallets using the commands identified in the DDD. Orchestrates interactions between the domain and infrastructure layers.</p>
+</li>
+<li>
+<p>The infrastructure layer is responsible for interacting with external systems, including adapters for DB communication and APIs exposition of user account, wallet and watchlist. Include also an adapter for the JWT token validation and a middleware to protect the routes reserved to the logged user.</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -2986,16 +3056,16 @@ The hexagonal architecture is an architectural style that separates the applicat
 <div class="sect2">
 <h3 id="_licensing">4.1. Licensing</h3>
 <div class="paragraph">
-<p>We have selected the <a href="https://opensource.org/licenses/MIT">MIT License</a> for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.</p>
+<p>The team have selected the <a href="https://opensource.org/licenses/MIT">MIT License</a> for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_versioning">4.2. Versioning</h3>
 <div class="paragraph">
-<p>We have adopted the Semantic Versioning (SemVer) scheme for versioning our software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.</p>
+<p>It has been decided to adopt the Semantic Versioning (SemVer) scheme for versioning the software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.</p>
 </div>
 <div class="paragraph">
-<p>To manage the process, we decided to use the <a href="https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin">Git Sensitive Semantic Versioning Gradle Plugin</a>, configured with the <a href="https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin">Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin</a>. This approach allowed us to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.</p>
+<p>To manage the process, the team decided to use the <a href="https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin">Git Sensitive Semantic Versioning Gradle Plugin</a>, configured with the <a href="https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin">Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin</a>. This approach has allowed to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.</p>
 </div>
 <div class="paragraph">
 <p>The software is released via CI through <a href="https://github.com/semantic-release/semantic-release">semantic-release</a> that automatically determines the next version number based on the commit messages and releases the software on GitHub.</p>
@@ -3004,12 +3074,12 @@ The hexagonal architecture is an architectural style that separates the applicat
 <div class="sect2">
 <h3 id="_branch_management">4.3. Branch Management</h3>
 <div class="paragraph">
-<p>We implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.</p>
+<p>It has been implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.</p>
 </div>
 <div class="sect3">
 <h4 id="_branch_organization">4.3.1. Branch Organization</h4>
 <div class="paragraph">
-<p>Our system used two primary branches:</p>
+<p>The system used two primary branches:</p>
 </div>
 <div class="paragraph">
 <p><strong>main</strong>: Contains production-ready code, updated at project milestones</p>
@@ -3018,7 +3088,7 @@ The hexagonal architecture is an architectural style that separates the applicat
 <p><strong>develop</strong>: Collects all updates and ongoing development work</p>
 </div>
 <div class="paragraph">
-<p>For feature development, we created separate branches that merged via pull requests into develop upon completion.</p>
+<p>For feature development, separate branches that merged via pull requests into develop upon completion has been created.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3049,7 +3119,7 @@ The hexagonal architecture is an architectural style that separates the applicat
 <div class="sect3">
 <h4 id="_protection_rules">4.3.3. Protection Rules</h4>
 <div class="paragraph">
-<p>Through branch rulesets, we enforced several key protections for the primary branches:</p>
+<p>Through branch rulesets, the team enforced several key protections for the primary branches:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3075,7 +3145,7 @@ The hexagonal architecture is an architectural style that separates the applicat
 <div class="sect2">
 <h3 id="_git_hooks">4.4. Git Hooks</h3>
 <div class="paragraph">
-<p>We have configured Git hooks using <a href="https://github.com/typicode/husky">Husky</a> to automate and enforce certain checks before commits and pushes. Husky allows us to easily manage Git hooks and ensure that our codebase maintains high standards.</p>
+<p>It has been configured Git hooks using <a href="https://github.com/typicode/husky">Husky</a> to automate and enforce certain checks before commits and pushes. Husky allows to easily manage Git hooks and ensure that our codebase maintains high standards.</p>
 </div>
 <div class="paragraph">
 <p>The configuration includes the following hooks:</p>
@@ -3135,12 +3205,310 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 </div>
 <div class="sect2">
 <h3 id="_build_automation">4.5. Build Automation</h3>
+<div class="paragraph">
+<p>Since the project consists of multiple microservices, each service is developed, built, and deployed independently.
+To ensure a consistent and automated build process, Gradle is used as the primary build tool for both Kotlin and TypeScript microservices, with npm scripts handling specific tasks for TypeScript services.</p>
+</div>
+<div class="sect3">
+<h4 id="_implementation_strategy_for_typescript_microservices">4.5.1. Implementation strategy for TypeScript microservices</h4>
+<div class="paragraph">
+<p>Each TypeScript microservice follows a standardized <code>build.gradle</code> configuration to ensure a consistent and automated build process. Gradle manages dependencies, builds, testing, and running the application, while npm handles JavaScript-specific tasks.</p>
+</div>
+<div class="paragraph">
+<p><strong>Dependency Management</strong>: To ensure that only production dependencies are installed, use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"installProdDependencies"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"npm"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Install only production dependencies (no dev dependencies)"</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"install"</span><span class="o">,</span> <span class="s2">"--omit=dev"</span><span class="o">))</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For installing dependencies, two separate tasks are defined:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>npmCiRoot</code>: Installs dependencies at the root level.</p>
+</li>
+<li>
+<p><code>npmCiApp</code>: Installs dependencies within the application directory.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both are combined under:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s2">"npmCiAll"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"npm"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Install npm dependencies in the root project and in the app directory"</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"npmCiRoot"</span><span class="o">,</span> <span class="s2">"npmCiApp"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Build Process</strong>: The build process ensures the application is properly compiled before execution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"build"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"npmCiApp"</span><span class="o">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"run"</span><span class="o">,</span> <span class="s2">"build"</span><span class="o">))</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A cleanup task is also included to remove outdated build artifacts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">Delete</span><span class="o">&gt;(</span><span class="s2">"cleanBuild"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"build"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Delete dist and build directories"</span>
+    <span class="n">doFirst</span> <span class="o">{</span>
+        <span class="n">delete</span><span class="o">(</span><span class="s2">"dist"</span><span class="o">)</span>
+        <span class="n">delete</span><span class="o">(</span><span class="s2">"build"</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Testing</strong>: Automated testing is integrated into the workflow. Tests are executed only after the build is complete:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"test"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"build"</span><span class="o">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"run"</span><span class="o">,</span> <span class="s2">"test"</span><span class="o">))</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Running the Application</strong>: The application can be started in different modes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Production Mode:</strong> Runs using npm&#8217;s <code>start</code> script.</p>
+</li>
+<li>
+<p><strong>Development Mode:</strong> Uses <code>runDev</code> to ensure the application is built before execution.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"start"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"npm"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Start the application in production mode"</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"run"</span><span class="o">,</span> <span class="s2">"start"</span><span class="o">))</span>
+<span class="o">}</span>
 
+<span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"runDev"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"build"</span><span class="o">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"run"</span><span class="o">,</span> <span class="s2">"dev"</span><span class="o">))</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Preconfigured Workflows</strong>: To simplify execution, predefined workflows group multiple tasks together:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>preRunAll</code>: Cleans the build, installs dependencies, and runs tests.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s2">"preRunAll"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"application"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Clean, install dependencies and run tests"</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"cleanBuild"</span><span class="o">,</span> <span class="s2">"npmCiAll"</span><span class="o">,</span> <span class="s2">"test"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>allInOne</code>: Executes <code>preRunAll</code> and then starts the application.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s2">"allInOne"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"application"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Run build and tests, then start the application"</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"preRunAll"</span><span class="o">)</span>
+    <span class="n">finalizedBy</span><span class="o">(</span><span class="s2">"runDev"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Documentation Generation</strong>: To generate project documentation using npm:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">NpmTask</span><span class="o">&gt;(</span><span class="s2">"docs"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"npmCiAll"</span><span class="o">)</span>
+    <span class="n">workingDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">".."</span><span class="o">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">listOf</span><span class="o">(</span><span class="s2">"run"</span><span class="o">,</span> <span class="s2">"docs"</span><span class="o">))</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Versioning</strong>: To display the current project version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s2">"printVersion"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">doLast</span> <span class="o">{</span>
+        <span class="n">println</span><span class="o">(</span><span class="s2">"Project version: ${project.version}"</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_implementation_strategy_for_kotlin_microservices">4.5.2. Implementation strategy for Kotlin microservices</h4>
+<div class="paragraph">
+<p>Kotlin microservices follow a standardized <code>build.gradle</code> configuration to automate building, testing, linting, and packaging. Gradle handles dependency management, static analysis, and Docker integration for streamlined deployment.</p>
+</div>
+<div class="paragraph">
+<p><strong>Testing</strong>: JUnit 5 is used as the testing framework. The configuration ensures that all tests run on the JUnit Platform:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">named</span><span class="o">&lt;</span><span class="n">Test</span><span class="o">&gt;(</span><span class="s2">"test"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">useJUnitPlatform</span><span class="o">()</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Code Quality and Static Analysis</strong>: To enforce code quality, the project integrates <code>detekt</code> for static analysis and <code>ktlint</code> for code formatting.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>detekt</code>: Uses a predefined configuration file for linting.</p>
+</li>
+<li>
+<p><code>ktlintFormat</code>: Ensures the code is formatted correctly.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">detekt</span> <span class="o">{</span>
+    <span class="n">buildUponDefaultConfig</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="n">config</span><span class="o">.</span><span class="na">setFrom</span><span class="o">(</span><span class="s2">"config/detekt/detekt.yaml"</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">tasks</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s2">"build"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"ktlintFormat"</span><span class="o">,</span> <span class="s2">"detekt"</span><span class="o">,</span> <span class="s2">"test"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Documentation</strong>: The project uses Dokka to generate documentation. However, due to configuration constraints, caching is disabled:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">withType</span><span class="o">&lt;</span><span class="n">org</span><span class="o">.</span><span class="na">jetbrains</span><span class="o">.</span><span class="na">dokka</span><span class="o">.</span><span class="na">gradle</span><span class="o">.</span><span class="na">DokkaTask</span><span class="o">&gt;().</span><span class="na">configureEach</span> <span class="o">{</span>
+    <span class="n">notCompatibleWithConfigurationCache</span><span class="o">(</span><span class="s2">"DokkaTask is not compatible with configuration cache"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Packaging the Application</strong>: The <code>jar</code> task creates a fat JAR, bundling all runtime dependencies. The main class is specified in the manifest:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">jar</span> <span class="o">{</span>
+    <span class="n">archiveFileName</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s2">"app.jar"</span><span class="o">)</span>
+    <span class="n">manifest</span> <span class="o">{</span>
+        <span class="n">attributes</span><span class="o">[</span><span class="s2">"Main-Class"</span><span class="o">]</span> <span class="o">=</span> <span class="n">application</span><span class="o">.</span><span class="na">mainClass</span><span class="o">.</span><span class="na">get</span><span class="o">()</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Include all runtime dependencies</span>
+    <span class="n">from</span><span class="o">(</span>
+        <span class="n">configurations</span><span class="o">.</span><span class="na">runtimeClasspath</span>
+            <span class="o">.</span><span class="na">get</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">filter</span> <span class="o">{</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s2">"jar"</span><span class="o">)</span> <span class="o">}</span>
+            <span class="o">.</span><span class="na">map</span> <span class="o">{</span> <span class="n">zipTree</span><span class="o">(</span><span class="n">it</span><span class="o">)</span> <span class="o">},</span>
+    <span class="o">)</span>
+
+    <span class="n">from</span><span class="o">(</span><span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">output</span><span class="o">)</span>
+
+    <span class="n">duplicatesStrategy</span> <span class="o">=</span> <span class="n">DuplicatesStrategy</span><span class="o">.</span><span class="na">EXCLUDE</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Versioning</strong>: A simple task to print the current version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s2">"printVersion"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">val</span> <span class="n">version</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">version</span>
+    <span class="n">doLast</span> <span class="o">{</span>
+        <span class="n">println</span><span class="o">(</span><span class="s2">"Project version: $version"</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Docker Integration</strong>: To streamline containerization, Docker tasks are included:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>dockerBuild</code>: Builds a Docker image for the application.</p>
+</li>
+<li>
+<p><code>dockerRun</code>: Runs the application inside a Docker container.</p>
+</li>
+<li>
+<p><code>dockerClean</code>: Cleans up unused Docker images.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">Exec</span><span class="o">&gt;(</span><span class="s2">"dockerBuild"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"docker"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Builds the Docker image for the application."</span>
+    <span class="n">workingDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">".."</span><span class="o">)</span>
+    <span class="n">commandLine</span><span class="o">(</span><span class="s2">"docker"</span><span class="o">,</span> <span class="s2">"build"</span><span class="o">,</span> <span class="s2">"-f"</span><span class="o">,</span> <span class="s2">"Dockerfile"</span><span class="o">,</span> <span class="s2">"-t"</span><span class="o">,</span> <span class="s2">"cryptomarket:latest"</span><span class="o">,</span> <span class="s2">"."</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">Exec</span><span class="o">&gt;(</span><span class="s2">"dockerRun"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"docker"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Runs the Docker container for the application."</span>
+    <span class="n">dependsOn</span><span class="o">(</span><span class="s2">"dockerBuild"</span><span class="o">)</span>
+    <span class="n">commandLine</span><span class="o">(</span><span class="s2">"docker"</span><span class="o">,</span> <span class="s2">"run"</span><span class="o">,</span> <span class="s2">"-p"</span><span class="o">,</span> <span class="s2">"8080:8080"</span><span class="o">,</span> <span class="s2">"cryptomarket:latest"</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="n">tasks</span><span class="o">.</span><span class="na">register</span><span class="o">&lt;</span><span class="n">Exec</span><span class="o">&gt;(</span><span class="s2">"dockerClean"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="s2">"docker"</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Removes dangling Docker images."</span>
+    <span class="n">commandLine</span><span class="o">(</span><span class="s2">"docker"</span><span class="o">,</span> <span class="s2">"image"</span><span class="o">,</span> <span class="s2">"prune"</span><span class="o">,</span> <span class="s2">"-f"</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_continuous_integration">4.6. Continuous Integration</h3>
 <div class="paragraph">
-<p>At the purpose of making the project more reliable and maintainable, we have implemented various actions with GitHub Actions. The main actions are:</p>
+<p>At the purpose of making the project more reliable and maintainable, various actions with GitHub Actions has been implemented. The main actions are:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3388,7 +3756,7 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 <div class="sect2">
 <h3 id="_shell_scripts">4.7. Shell Scripts</h3>
 <div class="paragraph">
-<p>We developed various shell scripts to automatize and help our work to develop this microservice application.
+<p>The team developed various shell scripts to automatize and help our work to develop this microservice application.
 The scripts are:</p>
 </div>
 <div class="sect3">
@@ -3424,20 +3792,20 @@ The scripts are:</p>
 <p>Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.</p>
 </div>
 <div class="paragraph">
-<p>In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
+<p>In the microservice architecture of the system, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
 </div>
 <div class="sect3">
 <h4 id="_docker_configuration">4.8.1. Docker Configuration</h4>
 <div class="paragraph">
-<p>We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:</p>
+<p>Separate Dockerfile configurations are maintained for the TypeScript and Kotlin backends, as well as the Vue.js frontend, to accommodate their different runtime requirements:</p>
 </div>
 <div class="sect4">
 <h5 id="_typescript_backend_dockerfile">TypeScript Backend Dockerfile</h5>
 <div class="paragraph">
-<p>For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies.</p>
+<p>For TypeScript microservices, is used a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies.</p>
 </div>
 <div class="paragraph">
-<p>We leverage build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
+<p>It has been leveraged the build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
 across environments:</p>
 </div>
 <div class="listingblock">
@@ -3475,7 +3843,7 @@ across environments:</p>
 <div class="sect4">
 <h5 id="_kotlin_backend_dockerfile">Kotlin Backend Dockerfile</h5>
 <div class="paragraph">
-<p>For Kotlin microservices, we leverage the Gradle build system and JVM optimization techniques:</p>
+<p>For Kotlin microservices, is leveraged the Gradle build system and JVM optimization techniques:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3505,7 +3873,7 @@ across environments:</p>
 <div class="sect4">
 <h5 id="_vue_js_frontend_dockerfile">Vue.js Frontend Dockerfile</h5>
 <div class="paragraph">
-<p>For our Vue.js frontend application, we use a multi-stage build that compiles the application and serves it via Nginx:</p>
+<p>For our Vue.js frontend application, is used a multi-stage build that compiles the application and serves it via Nginx:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3545,7 +3913,7 @@ envsubst <span class="s1">'\
 </div>
 </div>
 <div class="paragraph">
-<p>This script uses <code>envsubst</code> to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in our microservices architecture.</p>
+<p>This script uses <code>envsubst</code> to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in the realized microservices architecture.</p>
 </div>
 <div class="paragraph">
 <p>Each Docker image is automatically built, tagged, and published to GitHub Container Registry through our CI/CD pipelines, ensuring that the latest version is always available for deployment.</p>
@@ -3824,7 +4192,7 @@ envsubst <span class="s1">'\
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-02 21:28:45 UTC
+Last updated 2025-03-03 01:15:17 UTC
 </div>
 </div>
 </body>
