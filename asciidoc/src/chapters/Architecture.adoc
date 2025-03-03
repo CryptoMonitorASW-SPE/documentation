@@ -40,36 +40,57 @@ The hexagonal architecture is an architectural style that separates the applicat
 In the following sections is provided a detailed description of all the microservices and their hexagonal architecture.
 
 ==== Authentication
-The Authentication microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token generation.
-
+The Authentication microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token handling.
+The project structure is shown in the following diagram:
 [plantuml, {diagramsdir}/packagediagramauth, svg, title="Package Diagram - Authentication Microservice"]
 ----
 !include resources/puml/packagediagrams/authpackage.puml
 ----
+* The business logic of the Authentication microservice is contained in the domain layer, composed by the models prevously identified and the ports.
+
+* The application layer contains the use cases of the microservice, like the registration and login use cases and orchestrates the interactions between the domain layer and the infrastructure layer.
+
+* The infrastructure layer is responsible for the interaction with the database and the JWT token generation. In this layer there are the APIs exposed to the other microservices.
 
 ==== Crypto Market
 The Crypto Market microservice is responsible for fetching the latest cryptocurrency market data from the CoinGecko API. It provides the necessary APIs for fetching the market data.
+The project structure is shown in the following diagram:
 
 [plantuml, {diagramsdir}/packagediagramcryptomarket, svg, title="Package Diagram - Crypto Market Microservice"]
 ----
 !include resources/puml/packagediagrams/cryptomarketpackage.puml
 ----
 
+* The business logic of the Cryptomarket microservice is contained in the domain layer. This layer is composed of market entity models previously identified and ports.
+
+* The application layer implements business rules like retrieving market data and managing fetch processes. Orchestrates interactions between the domain and infrastructure layers.
+
+* The infrastructure layer is responsible for interacting with external systems, such as the CoinGecko API for data retrieval and event handling. Contains adapters for external communication.
+Components include CryptoRepositoryImpl (for HTTP communication), EventDispatcherAdapter (for event publishing), and a WebServer (for exposing RESTful endpoints).
+
 ==== Event-dispatcher
 The Event-dispatcher microservice is responsible for handling the communication between the microservices. It is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.
-
+The project structure is shown in the following diagram:
 [plantuml, {diagramsdir}/packagediagrameventdispatcher, svg, title="Package Diagram - Event-dispatcher Microservice"]
 ----
 !include resources/puml/packagediagrams/eventdispatcherpackage.puml
 ----
 
+* The business logic of the Event-dispatcher microservice is contained in the domain layer. This layer is composed of ports and several models that represent the events that are dispatched between the microservices.
+* The application layer implements business rules like processing events and validating data. Orchestrates interactions between the domain and infrastructure layers.
+* The infrastructure layer is responsible for interacting with external systems, including adapters for WebSockets, event-handling and JWT token validation. Exposes his APIs in the EventAdapter.
+
 ==== Notification
 The Notification microservice is responsible for sending notifications to the users of the system based on the price alerts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.
-
+The project structure is shown in the following diagram:
 [plantuml, {diagramsdir}/packagediagramnotification, svg, title="Package Diagram - Notification Microservice"]
 ----
 !include resources/puml/packagediagrams/notificationpackage.puml
 ----
+
+* The business logic of the Notification microservice is contained in the domain layer. This layer is composed of notification entity models previously identified and ports.
+* The application layer implements business rules like sending notifications and managing alerts. Orchestrates interactions between the domain and infrastructure layers.
+* The infrastructure layer is responsible for interacting with external systems, including an adapters for DB and event-dispatcher and for validate the JWT token given that the notifications interest only the logged user. Exposes his APIs with a WebServer.
 
 ==== User Management
 The User Management microservice is responsible for managing the users of the system including their account, watchlist, and wallet. It provides the necessary APIs for user management like viewing and editing the account, adding and removing cryptos for the watchlist, and adding and removing transactions for the wallet.
@@ -79,3 +100,6 @@ The User Management microservice is responsible for managing the users of the sy
 !include resources/puml/packagediagrams/usermanagementpackage.puml
 ----
 
+* The business logic of the User Management microservice is contained in the domain layer. This layer is composed of user entity models previously identified, ports and a factory responsible for creating new User entities along with their associated Wallet and Watchlist.
+* The application layer implements business rules like managing user accounts, watchlists, and wallets using the commands identified in the DDD. Orchestrates interactions between the domain and infrastructure layers.
+* The infrastructure layer is responsible for interacting with external systems, including adapters for DB communication and APIs exposition of user account, wallet and watchlist. Include also an adapter for the JWT token validation and a middleware to protect the routes reserved to the logged user.

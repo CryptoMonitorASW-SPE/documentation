@@ -1,26 +1,26 @@
 == DevOps Scenario
 
 === Licensing
-We have selected the link:https://opensource.org/licenses/MIT[MIT License] for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.
+The team have selected the link:https://opensource.org/licenses/MIT[MIT License] for this project due to its highly permissive terms. This license allows for unrestricted use, modification, and distribution of the software, with minimal limitations. The MIT License provides the flexibility needed for both individual contributors and corporate entities to utilize our software while maintaining appropriate legal protections.
 
 === Versioning
-We have adopted the Semantic Versioning (SemVer) scheme for versioning our software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.
+It has been decided to adopt the Semantic Versioning (SemVer) scheme for versioning the software. SemVer consists of three numbers separated by periods: MAJOR.MINOR.PATCH. The MAJOR version is incremented for incompatible changes, the MINOR version is incremented for backward-compatible changes, and the PATCH version is incremented for backward-compatible bug fixes.
 
-To manage the process, we decided to use the link:https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin[Git Sensitive Semantic Versioning Gradle Plugin], configured with the link:https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin[Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin]. This approach allowed us to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.
+To manage the process, the team decided to use the link:https://github.com/DanySK/git-sensitive-semantic-versioning-gradle-plugin[Git Sensitive Semantic Versioning Gradle Plugin], configured with the link:https://github.com/AndreaBrighi/conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin[Conventional Commit Strategy for Git Sensitive Semantic Versioning Gradle Plugin]. This approach has allowed to maintain a consistent versioning strategy across the project, and to automate the versioning process based on the commit messages.
 
 The software is released via CI through link:https://github.com/semantic-release/semantic-release[semantic-release] that automatically determines the next version number based on the commit messages and releases the software on GitHub.
 
 === Branch Management
-We implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.
+It has been implemented a structured branching strategy for this project to maintain code quality and streamline development workflows.
 
 ==== Branch Organization
-Our system used two primary branches:
+The system used two primary branches:
 
 *main*: Contains production-ready code, updated at project milestones
 
 *develop*: Collects all updates and ongoing development work
 
-For feature development, we created separate branches that merged via pull requests into develop upon completion.
+For feature development, separate branches that merged via pull requests into develop upon completion has been created.
 
 ==== Merge Strategy
 All merges to the develop branch followed a strict protocol:
@@ -32,7 +32,7 @@ All merges to the develop branch followed a strict protocol:
 * No primary branches deleted after successful merge
 
 ==== Protection Rules
-Through branch rulesets, we enforced several key protections for the primary branches:
+Through branch rulesets, the team enforced several key protections for the primary branches:
 
 * Restrict deletions
 * Require signed commits
@@ -42,7 +42,7 @@ Through branch rulesets, we enforced several key protections for the primary bra
 
 === Git Hooks
 
-We have configured Git hooks using link:https://github.com/typicode/husky[Husky] to automate and enforce certain checks before commits and pushes. Husky allows us to easily manage Git hooks and ensure that our codebase maintains high standards.
+It has been configured Git hooks using link:https://github.com/typicode/husky[Husky] to automate and enforce certain checks before commits and pushes. Husky allows to easily manage Git hooks and ensure that our codebase maintains high standards.
 
 The configuration includes the following hooks:
 
@@ -82,9 +82,247 @@ Templates
 
 === Build Automation
 
+Since the project consists of multiple microservices, each service is developed, built, and deployed independently.
+To ensure a consistent and automated build process, Gradle is used as the primary build tool for both Kotlin and TypeScript microservices, with npm scripts handling specific tasks for TypeScript services.
+
+==== Implementation strategy for TypeScript microservices
+
+Each TypeScript microservice follows a standardized `build.gradle` configuration to ensure a consistent and automated build process. Gradle manages dependencies, builds, testing, and running the application, while npm handles JavaScript-specific tasks.
+
+*Dependency Management*: To ensure that only production dependencies are installed, use:
+
+[source,groovy]
+----
+tasks.register<NpmTask>("installProdDependencies") {
+    group = "npm"
+    description = "Install only production dependencies (no dev dependencies)"
+    args.set(listOf("install", "--omit=dev"))
+}
+----
+
+For installing dependencies, two separate tasks are defined:
+
+- `npmCiRoot`: Installs dependencies at the root level.
+- `npmCiApp`: Installs dependencies within the application directory.
+
+Both are combined under:
+
+[source,groovy]
+----
+tasks.register("npmCiAll") {
+    group = "npm"
+    description = "Install npm dependencies in the root project and in the app directory"
+    dependsOn("npmCiRoot", "npmCiApp")
+}
+----
+
+*Build Process*: The build process ensures the application is properly compiled before execution:
+
+[source,groovy]
+----
+tasks.register<NpmTask>("build") {
+    dependsOn("npmCiApp")
+    args.set(listOf("run", "build"))
+}
+----
+
+A cleanup task is also included to remove outdated build artifacts:
+
+[source,groovy]
+----
+tasks.register<Delete>("cleanBuild") {
+    group = "build"
+    description = "Delete dist and build directories"
+    doFirst {
+        delete("dist")
+        delete("build")
+    }
+}
+----
+
+*Testing*: Automated testing is integrated into the workflow. Tests are executed only after the build is complete:
+
+[source,groovy]
+----
+tasks.register<NpmTask>("test") {
+    dependsOn("build")
+    args.set(listOf("run", "test"))
+}
+----
+
+*Running the Application*: The application can be started in different modes:
+
+- **Production Mode:** Runs using npm's `start` script.
+- **Development Mode:** Uses `runDev` to ensure the application is built before execution.
+
+[source,groovy]
+----
+tasks.register<NpmTask>("start") {
+    group = "npm"
+    description = "Start the application in production mode"
+    args.set(listOf("run", "start"))
+}
+
+tasks.register<NpmTask>("runDev") {
+    dependsOn("build")
+    args.set(listOf("run", "dev"))
+}
+----
+
+*Preconfigured Workflows*: To simplify execution, predefined workflows group multiple tasks together:
+
+- `preRunAll`: Cleans the build, installs dependencies, and runs tests.
+
+[source,groovy]
+----
+tasks.register("preRunAll") {
+    group = "application"
+    description = "Clean, install dependencies and run tests"
+    dependsOn("cleanBuild", "npmCiAll", "test")
+}
+----
+
+- `allInOne`: Executes `preRunAll` and then starts the application.
+
+[source,groovy]
+----
+tasks.register("allInOne") {
+    group = "application"
+    description = "Run build and tests, then start the application"
+    dependsOn("preRunAll")
+    finalizedBy("runDev")
+}
+----
+
+*Documentation Generation*: To generate project documentation using npm:
+
+[source,groovy]
+----
+tasks.register<NpmTask>("docs") {
+    dependsOn("npmCiAll")
+    workingDir = file("..")
+    args.set(listOf("run", "docs"))
+}
+----
+
+*Versioning*: To display the current project version:
+
+[source,groovy]
+----
+tasks.register("printVersion") {
+    doLast {
+        println("Project version: ${project.version}")
+    }
+}
+----
+
+==== Implementation strategy for Kotlin microservices
+
+Kotlin microservices follow a standardized `build.gradle` configuration to automate building, testing, linting, and packaging. Gradle handles dependency management, static analysis, and Docker integration for streamlined deployment.
+
+*Testing*: JUnit 5 is used as the testing framework. The configuration ensures that all tests run on the JUnit Platform:
+
+[source,groovy]
+----
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+}
+----
+
+*Code Quality and Static Analysis*: To enforce code quality, the project integrates `detekt` for static analysis and `ktlint` for code formatting.
+
+- `detekt`: Uses a predefined configuration file for linting.
+- `ktlintFormat`: Ensures the code is formatted correctly.
+
+[source,groovy]
+----
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("config/detekt/detekt.yaml")
+}
+
+tasks.named("build") {
+    dependsOn("ktlintFormat", "detekt", "test")
+}
+----
+
+*Documentation*: The project uses Dokka to generate documentation. However, due to configuration constraints, caching is disabled:
+
+[source,groovy]
+----
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+    notCompatibleWithConfigurationCache("DokkaTask is not compatible with configuration cache")
+}
+----
+
+*Packaging the Application*: The `jar` task creates a fat JAR, bundling all runtime dependencies. The main class is specified in the manifest:
+
+[source,groovy]
+----
+tasks.jar {
+    archiveFileName.set("app.jar")
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+
+    // Include all runtime dependencies
+    from(
+        configurations.runtimeClasspath
+            .get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) },
+    )
+
+    from(sourceSets.main.get().output)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+----
+
+*Versioning*: A simple task to print the current version:
+
+[source,groovy]
+----
+tasks.register("printVersion") {
+    val version = project.version
+    doLast {
+        println("Project version: $version")
+    }
+}
+----
+
+*Docker Integration*: To streamline containerization, Docker tasks are included:
+
+- `dockerBuild`: Builds a Docker image for the application.
+- `dockerRun`: Runs the application inside a Docker container.
+- `dockerClean`: Cleans up unused Docker images.
+
+[source,groovy]
+----
+tasks.register<Exec>("dockerBuild") {
+    group = "docker"
+    description = "Builds the Docker image for the application."
+    workingDir = file("..")
+    commandLine("docker", "build", "-f", "Dockerfile", "-t", "cryptomarket:latest", ".")
+}
+
+tasks.register<Exec>("dockerRun") {
+    group = "docker"
+    description = "Runs the Docker container for the application."
+    dependsOn("dockerBuild")
+    commandLine("docker", "run", "-p", "8080:8080", "cryptomarket:latest")
+}
+
+tasks.register<Exec>("dockerClean") {
+    group = "docker"
+    description = "Removes dangling Docker images."
+    commandLine("docker", "image", "prune", "-f")
+}
+----
+
 === Continuous Integration
 
-At the purpose of making the project more reliable and maintainable, we have implemented various actions with GitHub Actions. The main actions are:
+At the purpose of making the project more reliable and maintainable, various actions with GitHub Actions has been implemented. The main actions are:
 
 * Release Workflow
 * Delete Branch on Rebase
@@ -168,7 +406,7 @@ For TypeScript projects:
 ** Maintains persistent feedback through sticky comments
 
 === Shell Scripts
-We developed various shell scripts to automatize and help our work to develop this microservice application.
+The team developed various shell scripts to automatize and help our work to develop this microservice application.
 The scripts are:
 
 ==== Docker Service Management Scripts
@@ -188,17 +426,17 @@ These scripts significantly improved our development workflow by automating repe
 
 Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.
 
-In our microservice architecture, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.
+In the microservice architecture of the system, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.
 
 ==== Docker Configuration
 
-We maintain separate Dockerfile configurations for our TypeScript and Kotlin backends, as well as our Vue.js frontend, to accommodate their different runtime requirements:
+Separate Dockerfile configurations are maintained for the TypeScript and Kotlin backends, as well as the Vue.js frontend, to accommodate their different runtime requirements:
 
 ===== TypeScript Backend Dockerfile
 
-For TypeScript microservices, we use a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies. 
+For TypeScript microservices, is used a multi-stage build process that optimizes the final image size while maintaining all necessary dependencies.
 
-We leverage build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
+It has been leveraged the build automation through Gradle to standardize the build process, manage dependencies, and ensure consistent builds
 across environments:
 [source, dockerfile]
 ----
@@ -233,7 +471,7 @@ CMD ["npm", "run", "start"]
 
 ===== Kotlin Backend Dockerfile
 
-For Kotlin microservices, we leverage the Gradle build system and JVM optimization techniques:
+For Kotlin microservices, is leveraged the Gradle build system and JVM optimization techniques:
 
 [source, dockerfile]
 ----
@@ -261,7 +499,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ===== Vue.js Frontend Dockerfile
 
-For our Vue.js frontend application, we use a multi-stage build that compiles the application and serves it via Nginx:
+For our Vue.js frontend application, is used a multi-stage build that compiles the application and serves it via Nginx:
 
 [source, dockerfile]
 ----
@@ -299,6 +537,6 @@ envsubst '\
 exec "$@"
 ----
 
-This script uses `envsubst` to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in our microservices architecture.
+This script uses `envsubst` to replace environment variable placeholders in the Nginx configuration template with actual values at container startup time, enabling flexible service discovery in the realized microservices architecture.
 
 Each Docker image is automatically built, tagged, and published to GitHub Container Registry through our CI/CD pipelines, ensuring that the latest version is always available for deployment.
