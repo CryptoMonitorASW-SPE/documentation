@@ -616,11 +616,12 @@ pre.rouge .gs {
 <li><a href="#_versioning">4.2. Versioning</a></li>
 <li><a href="#_branch_management">4.3. Branch Management</a></li>
 <li><a href="#_git_hooks">4.4. Git Hooks</a></li>
-<li><a href="#_build_automation">4.5. Build Automation</a></li>
-<li><a href="#_continuous_integration">4.6. Continuous Integration</a></li>
-<li><a href="#_shell_scripts">4.7. Shell Scripts</a></li>
-<li><a href="#_containerization">4.8. Containerization</a></li>
-<li><a href="#_documentation">4.9. Documentation</a></li>
+<li><a href="#_templates">4.5. Templates</a></li>
+<li><a href="#_build_automation">4.6. Build Automation</a></li>
+<li><a href="#_continuous_integration">4.7. Continuous Integration</a></li>
+<li><a href="#_shell_scripts">4.8. Shell Scripts</a></li>
+<li><a href="#_containerization">4.9. Containerization</a></li>
+<li><a href="#_documentation">4.10. Documentation</a></li>
 </ul>
 </li>
 <li><a href="#_deployment">5. Deployment</a>
@@ -3207,18 +3208,25 @@ npx <span class="nt">--no-install</span> commitlint <span class="nt">--edit</spa
 <pre class="rouge highlight"><code data-lang="shell">npx lint-staged</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_templates">4.5. Templates</h3>
 <div class="paragraph">
-<p>Templates</p>
+<p>Three templates were created to standardize the creation of new microservices.
+The templates are <code>template-for-vue-js</code>, <code>template-for-kotlin</code>, and <code>template-for-typescript</code>.</p>
+</div>
+<div class="paragraph">
+<p>Each template includes a standardized project structure, configuration files, and build scripts to ensure consistency across microservices. The templates are designed to streamline the development process, reduce setup time, and maintain a high level of code quality.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_automation">4.5. Build Automation</h3>
+<h3 id="_build_automation">4.6. Build Automation</h3>
 <div class="paragraph">
 <p>Since the project consists of multiple microservices, each service is developed, built, and deployed independently.
 To ensure a consistent and automated build process, Gradle is used as the primary build tool for both Kotlin and TypeScript microservices, with npm scripts handling specific tasks for TypeScript services.</p>
 </div>
 <div class="sect3">
-<h4 id="_implementation_strategy_for_typescript_microservices">4.5.1. Implementation strategy for TypeScript microservices</h4>
+<h4 id="_implementation_strategy_for_typescript_microservices">4.6.1. Implementation strategy for TypeScript microservices</h4>
 <div class="paragraph">
 <p>Each TypeScript microservice follows a standardized <code>build.gradle</code> configuration to ensure a consistent and automated build process. Gradle manages dependencies, builds, testing, and running the application, while npm handles JavaScript-specific tasks.</p>
 </div>
@@ -3385,7 +3393,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation_strategy_for_kotlin_microservices">4.5.2. Implementation strategy for Kotlin microservices</h4>
+<h4 id="_implementation_strategy_for_kotlin_microservices">4.6.2. Implementation strategy for Kotlin microservices</h4>
 <div class="paragraph">
 <p>Kotlin microservices follow a standardized <code>build.gradle</code> configuration to automate building, testing, linting, and packaging. Gradle handles dependency management, static analysis, and Docker integration for streamlined deployment.</p>
 </div>
@@ -3514,7 +3522,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect2">
-<h3 id="_continuous_integration">4.6. Continuous Integration</h3>
+<h3 id="_continuous_integration">4.7. Continuous Integration</h3>
 <div class="paragraph">
 <p>At the purpose of making the project more reliable and maintainable, various actions with GitHub Actions has been implemented. The main actions are:</p>
 </div>
@@ -3535,7 +3543,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_release">4.6.1. Release</h4>
+<h4 id="_release">4.7.1. Release</h4>
 <div class="paragraph">
 <p>This workflow automates the release process and is triggered by pushes to the main branch. It consists of a single job that:</p>
 </div>
@@ -3579,7 +3587,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect3">
-<h4 id="_release_workflow">4.6.2. Release Workflow</h4>
+<h4 id="_release_workflow">4.7.2. Release Workflow</h4>
 <div class="paragraph">
 <p>This workflow is triggered by a published release. It consists of three main jobs:</p>
 </div>
@@ -3649,7 +3657,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete_branch_on_rebase">4.6.3. Delete Branch on Rebase</h4>
+<h4 id="_delete_branch_on_rebase">4.7.3. Delete Branch on Rebase</h4>
 <div class="paragraph">
 <p>This workflow automatically removes branches after they have been successfully merged via pull requests. It doesn&#8217;t delete protected branches like Main or Develop due to branch rulesets. The workflow:</p>
 </div>
@@ -3674,7 +3682,7 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pr_test_pipeline">4.6.4. PR Test Pipeline</h4>
+<h4 id="_pr_test_pipeline">4.7.4. PR Test Pipeline</h4>
 <div class="paragraph">
 <p>This workflow runs automated checks on every pull request (creation, update, or reopening).  Due to branch protection rules, both jobs must complete successfully before the pull request can be merged.</p>
 </div>
@@ -3765,13 +3773,13 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 </div>
 </div>
 <div class="sect2">
-<h3 id="_shell_scripts">4.7. Shell Scripts</h3>
+<h3 id="_shell_scripts">4.8. Shell Scripts</h3>
 <div class="paragraph">
 <p>The team developed various shell scripts to automatize and help our work to develop this microservice application.
 The scripts are:</p>
 </div>
 <div class="sect3">
-<h4 id="_docker_service_management_scripts">4.7.1. Docker Service Management Scripts</h4>
+<h4 id="_docker_service_management_scripts">4.8.1. Docker Service Management Scripts</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -3784,7 +3792,7 @@ The scripts are:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_repository_management_scripts">4.7.2. Repository Management Scripts</h4>
+<h4 id="_repository_management_scripts">4.8.2. Repository Management Scripts</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -3798,7 +3806,7 @@ The scripts are:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_containerization">4.8. Containerization</h3>
+<h3 id="_containerization">4.9. Containerization</h3>
 <div class="paragraph">
 <p>Containerization, facilitated by Docker, plays a crucial role in efficiently isolating and distributing applications. Docker containers encapsulate everything needed to run an application, ensuring consistency across various environments. This approach simplifies distribution, versioning, and dependency management, enhancing the overall portability of applications.</p>
 </div>
@@ -3806,7 +3814,7 @@ The scripts are:</p>
 <p>In the microservice architecture of the system, each microservice is containerized with its own Dockerfile, enabling independent deployment and scaling. This modular approach allows for isolated development, testing, and production environments while maintaining consistency across the development lifecycle.</p>
 </div>
 <div class="sect3">
-<h4 id="_docker_configuration">4.8.1. Docker Configuration</h4>
+<h4 id="_docker_configuration">4.9.1. Docker Configuration</h4>
 <div class="paragraph">
 <p>Separate Dockerfile configurations are maintained for the TypeScript and Kotlin backends, as well as the Vue.js frontend, to accommodate their different runtime requirements:</p>
 </div>
@@ -3933,7 +3941,7 @@ envsubst <span class="s1">'\
 </div>
 </div>
 <div class="sect2">
-<h3 id="_documentation">4.9. Documentation</h3>
+<h3 id="_documentation">4.10. Documentation</h3>
 <div class="paragraph">
 <p>To make the development process more efficient and maintainable, the team has implemented a comprehensive documentation strategy. The documentation is built using AsciiDoc, a lightweight markup language that allows for easy content creation and formatting.
 In the <a href="https://github.com/CryptoMonitorASW-SPE/documentation">Documentation Repository</a>, the team has implemented a GitHub Actions workflow to build and deploy the documentation automatically. The workflow is triggered on pushes to the main branch and can also be manually triggered. It consists of two jobs: build and deploy.</p>
@@ -4267,7 +4275,7 @@ The implementation of automation throughout the development lifecycle has demons
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-03 08:23:19 UTC
+Last updated 2025-03-03 08:44:31 UTC
 </div>
 </div>
 </body>
