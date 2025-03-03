@@ -7,7 +7,7 @@ For the CryptoMonitor system, the team chose a microservices architecture. The m
 of services that are loosely coupled, highly maintainable, and independently deployable. Each service is responsible for a specific business capability and can be developed, deployed,
 and scaled independently.
 
-The system has been devided into the following microservices following the bounded context:
+The system has been divided into the following microservices following the bounded context:
 
 * *Vue-frontend microservice*: This microservice is responsible for the user interface of the system. It is a Vue.js application that consumes the RESTful APIs provided by the backend microservices.
 * *Authentication microservice*: This microservice is responsible for the authentication and authorization of the users of the system. It provides the necessary APIs for user registration, login, and token generation.
@@ -17,7 +17,7 @@ and adding and removing transactions for the wallet.
 * *Notification microservice*: This microservice is responsible for sending notifications to the users of the system based on the price alterts that they have set. It provides the necessary APIs for handling the notifications and setting the price alerts.
 * *Event-dispatcher microservice*: This microservice has been added to the architecture to handle the communication between the microservices. More specifically, it is responsible for dispatching events between the Vue-frontend and Crypto Market and Notification microservices.
 
-The *Vue-frontend* and the *Event-dispatcher* microservices doesn't appier in the bounded context analysis. The first-one because is dedicated only to the frontend and the second-one because is a simple orchestrator between the frontend and the other microservices.
+The *Vue-frontend* and the *Event-dispatcher* microservices doesn't appear in the bounded context analysis. The first-one because is dedicated only to the frontend and the second-one because is a simple orchestrator between the frontend and the other microservices.
 However, the team decided to include them in the architecture as a microservices to have a more clear and complete view of the system and also to permit the scalability of the entire system.
 
 The architecture of the system is shown in the following diagram:
@@ -33,9 +33,9 @@ The team decided to not use an API Gateway in the architecture to avoid unecessa
 For each microservice, the team adopted an hexagonal architecture, except for the Vue-frontend microservice that is a Single-Page Application (SPA).
 The hexagonal architecture is an architectural style that separates the application into three main layers:
 
-* Domain layer: This layer contains the business logic of the application. It is the core of the application and is independent of the other layers.
-* Application layer: This layer contains the use cases of the application. It is responsible for coordinating the interactions between the domain layer and the infrastructure layer.
-* Infrastructure layer: This layer contains the implementation details of the application. It is responsible for interacting with external systems such as databases, APIs, and messaging systems.
+* *Domain layer*: This layer contains the business logic of the application. It is the core of the application and is independent of the other layers.
+* *Application layer*: This layer contains the use cases of the application. It is responsible for coordinating the interactions between the domain layer and the infrastructure layer.
+* *Infrastructure layer*: This layer contains the implementation details of the application. It is responsible for interacting with external systems such as databases, APIs, and messaging systems.
 
 In the following sections is provided a detailed description of all the microservices and their hexagonal architecture.
 
