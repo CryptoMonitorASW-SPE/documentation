@@ -411,7 +411,9 @@ For TypeScript projects:
 ** Maintains persistent feedback through sticky comments
 
 === Shell Scripts
-The team developed various shell scripts to automatize and help our work to develop this microservice application.
+The team developed various shell scripts to automatize and help our work to develop this microservice application. 
+
+These scripts are created for both Windows and Unix environments, with `.ps1` for PowerShell and `.sh` for shell scripts.
 The scripts are:
 
 ==== Docker Service Management Scripts
