@@ -78,7 +78,11 @@ npx --no-install commitlint --edit $1
 npx lint-staged
 ----
 
-Templates
+=== Templates
+Three templates were created to standardize the creation of new microservices.
+The templates are `template-for-vue-js`, `template-for-kotlin`, and `template-for-typescript`.
+
+Each template includes a standardized project structure, configuration files, and build scripts to ensure consistency across microservices. The templates are designed to streamline the development process, reduce setup time, and maintain a high level of code quality.
 
 === Build Automation
 
