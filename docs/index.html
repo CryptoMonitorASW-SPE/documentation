@@ -620,6 +620,7 @@ pre.rouge .gs {
 <li><a href="#_continuous_integration">4.6. Continuous Integration</a></li>
 <li><a href="#_shell_scripts">4.7. Shell Scripts</a></li>
 <li><a href="#_containerization">4.8. Containerization</a></li>
+<li><a href="#_documentation">4.9. Documentation</a></li>
 </ul>
 </li>
 <li><a href="#_deployment">5. Deployment</a>
@@ -3604,7 +3605,10 @@ To ensure a consistent and automated build process, Gradle is used as the primar
 <div class="ulist">
 <ul>
 <li>
-<p>Generates Dokka HTML documentation</p>
+<p>Generates Dokka HTML documentation for Kotlin projects</p>
+</li>
+<li>
+<p>Generates TypeDoc documentation for TypeScript projects</p>
 </li>
 <li>
 <p>Packages documentation files</p>
@@ -3921,6 +3925,22 @@ envsubst <span class="s1">'\
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_documentation">4.9. Documentation</h3>
+<div class="paragraph">
+<p>To make the development process more efficient and maintainable, the team has implemented a comprehensive documentation strategy. The documentation is built using AsciiDoc, a lightweight markup language that allows for easy content creation and formatting.
+In the <a href="https://github.com/CryptoMonitorASW-SPE/documentation">Documentation Repository</a>, the team has implemented a GitHub Actions workflow to build and deploy the documentation automatically. The workflow is triggered on pushes to the main branch and can also be manually triggered. It consists of two jobs: build and deploy.</p>
+</div>
+<div class="paragraph">
+<p>The build job checks out the repository, installs necessary packages, sets up Ruby, installs Ruby gems, builds the documentation, and uploads the generated documentation as an artifact.</p>
+</div>
+<div class="paragraph">
+<p>The deploy job checks out the repository, switches to the gh-pages branch, downloads the documentation artifact, imports the GPG key, and commits and pushes the updated documentation to the gh-pages branch.</p>
+</div>
+<div class="paragraph">
+<p>The page is then built by GitHub Pages and made available at the <a href="https://cryptomonitorasw-spe.github.io/documentation/">CryptoMonitor Documentation</a> URL.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -4192,7 +4212,7 @@ envsubst <span class="s1">'\
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-03 08:03:20 UTC
+Last updated 2025-03-03 08:22:21 UTC
 </div>
 </div>
 </body>
